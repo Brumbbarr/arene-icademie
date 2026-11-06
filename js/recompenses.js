@@ -1,15 +1,15 @@
 // Arènes (selon les points globaux), succès, titres et cartes à collectionner.
 window.ARENES = [
-  {n:1, nom:'Le Quai de chargement', min:0,    bg:'radial-gradient(130% 120% at 50% 0%,#3a3f4a 0%,#1a1d24 55%,#0d0f14 100%)', acc:'#9aa0ab', diff:[6,3,1], deco:'📦'},
-  {n:2, nom:'L\'Entrepôt',           min:1030, bg:'radial-gradient(130% 120% at 50% 0%,#5a3a1e 0%,#2a1a10 55%,#110a06 100%)', acc:'#f0a66a', diff:[4,4,2], deco:'🏭'},
-  {n:3, nom:'La Chambre froide',     min:1080, bg:'radial-gradient(130% 120% at 50% 0%,#1e4a6a 0%,#0f2236 55%,#060d16 100%)', acc:'#8fd8ff', diff:[3,4,3], deco:'❄️'},
-  {n:4, nom:'Le Salon professionnel',min:1160, bg:'radial-gradient(130% 120% at 50% 0%,#5a4a12 0%,#2a2208 55%,#110d03 100%)', acc:'#ffe27a', diff:[2,4,4], deco:'🎪'},
-  {n:5, nom:'La Salle du conseil',   min:1250, bg:'radial-gradient(130% 120% at 50% 0%,#125a50 0%,#082a26 55%,#03110f 100%)', acc:'#8ff0e0', diff:[1,4,5], deco:'💼'},
-  {n:6, nom:'La Tour de verre',      min:1350, bg:'radial-gradient(130% 120% at 50% 0%,#24387a 0%,#101a3a 55%,#060a18 100%)', acc:'#a9c4ff', diff:[1,3,6], deco:'🏙️'},
-  {n:7, nom:'Le Sommet',             min:1450, bg:'radial-gradient(130% 120% at 50% 0%,#4a1a6a 0%,#220c34 55%,#0e0516 100%)', acc:'#e3a6ff', diff:[0,3,7], deco:'🏔️'},
-  {n:8, nom:'Le Panthéon',           min:1550, bg:'radial-gradient(130% 120% at 50% 0%,#6a1a2a 0%,#340c14 55%,#16050a 100%)', acc:'#ffb3c1', diff:[0,2,8], deco:'👑'}
-];
-window.arene = (pts) => { let a = ARENES[0]; ARENES.forEach((x) => { if (pts >= x.min) a = x; }); return a; };
+  {n:1, nom:'La Plaine',             min:0,    bg:'radial-gradient(130% 120% at 50% 0%,#2f5a2a 0%,#152a14 55%,#081008 100%)', acc:'#8fe07a', diff:[7,2,1], deco:'🌾'},
+  {n:2, nom:'Le Quai de chargement', min:30, bg:'radial-gradient(130% 120% at 50% 0%,#3a3f4a 0%,#1a1d24 55%,#0d0f14 100%)', acc:'#9aa0ab', diff:[6,3,1], deco:'📦'},
+  {n:3, nom:'L\'Entrepôt',           min:80, bg:'radial-gradient(130% 120% at 50% 0%,#5a3a1e 0%,#2a1a10 55%,#110a06 100%)', acc:'#f0a66a', diff:[4,4,2], deco:'🏭'},
+  {n:4, nom:'La Chambre froide',     min:140, bg:'radial-gradient(130% 120% at 50% 0%,#1e4a6a 0%,#0f2236 55%,#060d16 100%)', acc:'#8fd8ff', diff:[3,4,3], deco:'❄️'},
+  {n:5, nom:'Le Salon professionnel',min:210, bg:'radial-gradient(130% 120% at 50% 0%,#5a4a12 0%,#2a2208 55%,#110d03 100%)', acc:'#ffe27a', diff:[2,4,4], deco:'🎪'},
+  {n:6, nom:'La Salle du conseil',   min:290, bg:'radial-gradient(130% 120% at 50% 0%,#125a50 0%,#082a26 55%,#03110f 100%)', acc:'#8ff0e0', diff:[1,4,5], deco:'💼'},
+  {n:7, nom:'La Tour de verre',      min:380, bg:'radial-gradient(130% 120% at 50% 0%,#24387a 0%,#101a3a 55%,#060a18 100%)', acc:'#a9c4ff', diff:[1,3,6], deco:'🏙️'},
+  {n:8, nom:'Le Sommet',             min:480, bg:'radial-gradient(130% 120% at 50% 0%,#4a1a6a 0%,#220c34 55%,#0e0516 100%)', acc:'#e3a6ff', diff:[0,3,7], deco:'🏔️'},
+  {n:9, nom:'Le Panthéon',           min:580, bg:'radial-gradient(130% 120% at 50% 0%,#6a1a2a 0%,#340c14 55%,#16050a 100%)', acc:'#ffb3c1', diff:[0,2,8], deco:'👑'}
+];window.arene = (pts) => { let a = ARENES[0]; ARENES.forEach((x) => { if (pts >= x.min) a = x; }); return a; };
 
 // Cartes à collectionner : expressions anglaises utiles au travail. r = rareté.
 window.CARTES = [
@@ -56,9 +56,9 @@ window.SUCCES = [
   {id:'q500',nom:'Vétéran',desc:'Répondre à 500 questions',titre:'Vétéran',f:(s)=>s.questions>=500},
   {id:'serie3',nom:'Régulier',desc:'3 jours de suite',titre:'Régulier',f:(s)=>s.serie>=3},
   {id:'serie7',nom:'Discipline de fer',desc:'7 jours de suite',titre:'Discipliné',f:(s)=>s.serie>=7},
-  {id:'arene3',nom:'Coup de froid',desc:'Atteindre la Chambre froide',titre:'Frigoriste',f:(s)=>s.arene>=3},
-  {id:'arene5',nom:'Dans la cour des grands',desc:'Atteindre la Salle du conseil',titre:'Stratège',f:(s)=>s.arene>=5},
-  {id:'arene8',nom:'Immortel',desc:'Atteindre le Panthéon',titre:'Légende vivante',f:(s)=>s.arene>=8},
+  {id:'arene3',nom:'Coup de froid',desc:'Atteindre la Chambre froide',titre:'Frigoriste',f:(s)=>s.arene>=4},
+  {id:'arene5',nom:'Dans la cour des grands',desc:'Atteindre la Salle du conseil',titre:'Stratège',f:(s)=>s.arene>=6},
+  {id:'arene8',nom:'Immortel',desc:'Atteindre le Panthéon',titre:'Légende vivante',f:(s)=>s.arene>=9},
   {id:'laniflex',nom:'Ambassadeur Laniflex',desc:'Classer les 3 notions Laniflex',titre:'Ambassadeur Laniflex',f:(s)=>s.lx>=3},
   {id:'bilingue',nom:'Bilingue',desc:'Classer une notion en anglais et une en français',titre:'Bilingue',f:(s)=>s.en>=1&&s.fr>=1},
   {id:'collec10',nom:'Collectionneur',desc:'Avoir 10 cartes différentes',titre:'Collectionneur',f:(s)=>s.cartes>=10},

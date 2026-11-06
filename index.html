@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="fr"><head>
 <title>Arène Icademie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&display=swap">
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0a0f1c"><link rel="icon" href="icon-192.png" sizes="192x192"><link rel="apple-touch-icon" href="app-icon-v5-192.png">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>
@@ -135,7 +136,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .quest b{display:block;margin:4px 0 8px}
 .row2{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .row2 small{color:var(--mut);font-size:.78rem}
-.go.mini{padding:8px 14px;font-size:.85rem;flex:none;width:auto;height:auto;line-height:1.2;align-self:center;display:inline-block}
+.go.sm{padding:8px 14px;font-size:.85rem;flex:none;width:auto;height:auto;line-height:1.2;align-self:center;display:inline-block}
 .tag{font-size:.75rem;font-weight:800;color:var(--gold)}
 .revenge{border-color:#5a2130}
 .rv{display:flex;gap:10px;align-items:center}.rv svg{width:44px;height:44px}.rv small{display:block;color:var(--mut);font-size:.75rem}
@@ -229,6 +230,67 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
  .glow{animation:glow 3s ease-in-out infinite alternate}
  @keyframes glow{from{opacity:.3}to{opacity:.75}}
 }
+/* ================= STYLE PIXEL ART ================= */
+:root{--pxf:"Pixelify Sans",system-ui,sans-serif}
+.px{image-rendering:pixelated;display:block;width:100%;height:100%}
+h1,h2,.label,.mode b,.bossc b,.go,.quit,.tabbar button,.tabbar a,.seg button,.modsel,.chip,.mmr,.combo,.big,.pts,.hero h1,.intro h2,.tag,.node b,.node small,.rankup,.lives,.timer,.meta,.opt kbd{font-family:var(--pxf);letter-spacing:.02em}
+.label{font-weight:700;letter-spacing:.08em}
+.card,.mode,.bossc,.opt,.chip,.go,.quit,.seg,.modsel,.fill input,.hero,.arena,.top,.carte,.mini,.fb,.ov-card,.tabbar,.snd,.nav2 button,.nav2 a,.intro .rules span{border-radius:0!important}
+.card,.mode,.bossc,.hero,.ov-card,.carte{border:none!important;box-shadow:0 0 0 2px #05070d,0 0 0 4px var(--frame,#2a3a60),0 0 0 6px #05070d,6px 8px 0 4px #00000070!important;margin:6px}
+.home .card,.route{margin:6px}
+.quest{--frame:#8a6a1a}.revenge{--frame:#7a2a3a}.bossc{--frame:color-mix(in srgb,var(--bc) 70%,#000)}
+.bossc.done{--frame:#ffcf5a}
+.hero{--frame:var(--arena)}
+.go{box-shadow:inset -4px -4px 0 #0005,inset 4px 4px 0 #fff3,0 4px 0 #0008;transition:transform .05s}
+.go:active,.mode:active,.opt:active{transform:translateY(3px)}
+.opt{border:none!important;box-shadow:inset 0 0 0 2px #2a3a60,inset -3px -3px 0 #0004}
+.opt.good{box-shadow:inset 0 0 0 3px var(--win)}.opt.bad{box-shadow:inset 0 0 0 3px var(--loss)}
+.chip{border-width:2px}
+.bar,.hp{border-radius:0!important;height:10px;box-shadow:inset 0 0 0 2px #0008}
+.bar div,.hp div{border-radius:0!important;background-image:repeating-linear-gradient(90deg,transparent 0 6px,#0003 6px 8px)!important}
+.portrait{border-radius:0;background:#0b1120;box-shadow:0 0 0 2px #05070d,0 0 0 4px var(--bc);overflow:hidden}
+.portrait .px{width:100%;height:100%}
+.hero-emb .px{width:84px;height:84px;filter:drop-shadow(2px 3px 0 #0009)}
+.rv .px,.li .px,.chip .px,.mode .px{width:100%;height:100%}
+.chip .px{width:22px;height:22px}
+.li>svg.px,.li>.px{width:36px;height:36px}
+.px-glow{filter:drop-shadow(0 0 3px var(--pg)) drop-shadow(0 0 1px var(--pg))}
+.chest-ic .px{width:96px;height:86px}
+.fx{display:none}
+/* Route des arènes */
+.route .track{display:flex;align-items:flex-start;gap:0;overflow-x:auto;padding:10px 2px 6px;scroll-snap-type:x proximity}
+.node{flex:none;width:92px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;scroll-snap-align:center}
+.node .thumb{position:relative;width:84px;height:44px;overflow:hidden;box-shadow:0 0 0 2px #05070d,0 0 0 4px #2a3a60}
+.node .thumb .px{width:100%;height:100%}
+.node b{font-size:.68rem;line-height:1.1}
+.node small{font-size:.62rem;color:var(--mut)}
+.node.lock .thumb{filter:grayscale(1) brightness(.4)}
+.node.lock b{color:var(--mut)}
+.node.here .thumb{box-shadow:0 0 0 2px #05070d,0 0 0 4px var(--ac),0 0 14px var(--ac)}
+.node.here small{color:var(--ac);font-weight:700}
+.node.done .thumb{box-shadow:0 0 0 2px #05070d,0 0 0 4px #34d27b}
+.lk,.ok{position:absolute;inset:0;display:grid;place-items:center;font-size:1rem}
+.ok{color:#34d27b;font-family:var(--pxf);font-weight:700;font-size:1.2rem;text-shadow:0 2px 0 #000}
+.link{flex:none;width:18px;height:4px;margin-top:22px;background:repeating-linear-gradient(90deg,#4a5570 0 4px,transparent 4px 8px)}
+.link.on{background:repeating-linear-gradient(90deg,#34d27b 0 4px,transparent 4px 8px)}
+@media (prefers-reduced-motion:no-preference){
+ .px-sparkle rect{animation:pxblink 1.4s steps(2) infinite}
+ .px-flame.f1{animation:pxflip .45s steps(1) infinite}
+ .px-flame.f2{animation:pxflip .45s steps(1) infinite reverse}
+ .px-leg{animation:legpulse 1.6s steps(4) infinite}
+ .pf.snow{animation:pxfall linear infinite}
+ .pf.rise{animation:pxrise linear infinite}
+ .pf.blink{animation:pxblink 1.6s steps(2) infinite}
+ .curtain rect{animation:sway 2.4s steps(4) infinite alternate;transform-box:fill-box;transform-origin:top}
+ .node.here .thumb{animation:herepulse 1.2s steps(3) infinite}
+ @keyframes pxblink{50%{opacity:0}}
+ @keyframes pxflip{50%{opacity:0}}
+ @keyframes legpulse{50%{filter:drop-shadow(0 0 6px #ff3b5c) drop-shadow(0 0 2px #ffd166)}}
+ @keyframes pxfall{to{transform:translateY(72px)}}
+ @keyframes pxrise{to{transform:translateY(-70px);opacity:0}}
+ @keyframes sway{to{transform:skewX(4deg)}}
+ @keyframes herepulse{50%{transform:translateY(-3px)}}
+}
 </style>
 
 </head><body>
@@ -243,13 +305,13 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 <script src="js/banque-laniflex.js"></script>
 <script src="js/banque-cours.js"></script>
 <script src="js/recompenses.js"></script>
-<script src="js/emblem.js"></script>
+<script src="js/pixel.js"></script>
 <script src="js/ui.js"></script>
 <script>
-const TIERS=[{nom:'Fer',min:0,c1:'#9aa0ab',c2:'#4b4f57'},{nom:'Bronze',min:950,c1:'#f0a66a',c2:'#7a4420'},{nom:'Argent',min:1050,c1:'#e6edf6',c2:'#7d8a9c'},{nom:'Or',min:1150,c1:'#ffe27a',c2:'#b8841a'},{nom:'Platine',min:1250,c1:'#8ff0e0',c2:'#1f8f84'},{nom:'Diamant',min:1350,c1:'#a9c4ff',c2:'#3557d6'},{nom:'Maître',min:1450,c1:'#e3a6ff',c2:'#7a2fc0'},{nom:'Légende',min:1550,c1:'#ffb3c1',c2:'#d1203f'}];
-function rang(r){let i=TIERS.length-1;while(i>0&&r<TIERS[i].min)i--;if(i===TIERS.length-1)return{i,label:TIERS[i].nom,div:0};const bas=i===0?850:TIERS[i].min,w=(TIERS[i+1].min-bas)/3,div=Math.max(1,Math.min(3,Math.floor((r-bas)/w)+1));return{i,label:TIERS[i].nom+' '+['I','II','III'][div-1],div}}
+const TIERS=[{nom:'Fer',min:0,c1:'#9aa0ab',c2:'#4b4f57'},{nom:'Bronze',min:30,c1:'#f0a66a',c2:'#7a4420'},{nom:'Argent',min:80,c1:'#e6edf6',c2:'#7d8a9c'},{nom:'Or',min:140,c1:'#ffe27a',c2:'#b8841a'},{nom:'Platine',min:210,c1:'#8ff0e0',c2:'#1f8f84'},{nom:'Diamant',min:290,c1:'#a9c4ff',c2:'#3557d6'},{nom:'Maître',min:380,c1:'#e3a6ff',c2:'#7a2fc0'},{nom:'Légende',min:480,c1:'#ffb3c1',c2:'#d1203f'}];
+function rang(r){let i=TIERS.length-1;while(i>0&&r<TIERS[i].min)i--;if(i===TIERS.length-1)return{i,label:TIERS[i].nom,div:0};const bas=TIERS[i].min,w=(TIERS[i+1].min-bas)/3,div=Math.max(1,Math.min(3,Math.floor((r-bas)/w)+1));return{i,label:TIERS[i].nom+' '+['I','II','III'][div-1],div}}
 let uid=0;
-function emb(points,classee){const k=rang(points);return emblemSvg(classee?k.i:-1,classee?k.div:0)}
+function emb(points,classee){const k=rang(points);return pxEmblem(classee?k.i:-1,classee?k.div:0)}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const norm=s=>String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/\s+/g,' ').replace(/\s+([?.!,])/g,'$1').trim();
@@ -257,8 +319,8 @@ const strip=s=>norm(s).replace(/[.!?]+$/,'');
 
 // ---- Elo, same rules as the dashboard
 function elo(answers){const st={};const sorted=answers.map((r,k)=>({...r,k})).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.k-b.k);
- sorted.forEach(r=>{const s=st[r.notion]=st[r.notion]||{R:1000,n:0,g:{}};const E=1/(1+Math.pow(10,(1000-s.R)/400));let g=40*((r.correct?1:0)-E);const d=s.g[r.date]||0;if(g>0&&d>=100)g/=4;s.g[r.date]=d+g;s.R+=g;s.n++});return st}
-function globalMmr(st){const cl=Object.values(st).filter(x=>x.n>=3);return cl.length?Math.round(cl.reduce((a,x)=>a+x.R,0)/cl.length):1000}
+ sorted.forEach(r=>{const s=st[r.notion]=st[r.notion]||{R:0,n:0,g:{}};const E=1/(1+Math.pow(10,(0-s.R)/400));let g=40*((r.correct?1:0)-E);const d=s.g[r.date]||0;if(g>0&&d>=100)g/=4;s.g[r.date]=d+g;s.R=Math.max(0,s.R+g);s.n++});return st}
+function globalMmr(st){const cl=Object.values(st).filter(x=>x.n>=3);return cl.length?Math.round(cl.reduce((a,x)=>a+x.R,0)/cl.length):0}
 
 // ---- state
 let db=null,col=null,base=[],sessions=[],bossWins={},ready=false,saveErr='';
@@ -291,7 +353,7 @@ const BOSSES=[
 function pick(pool,n,weights){const p=pool.slice(),out=[];while(out.length<n&&p.length){let tot=p.reduce((a,q)=>a+(weights?weights(q):1),0),r=Math.random()*tot,i=0;for(;i<p.length;i++){r-=weights?weights(p[i]):1;if(r<=0)break}out.push(p.splice(Math.min(i,p.length-1),1)[0])}return out}
 function startMode(m){const st=elo(allAnswers());let pool=BANQUE.filter(q=>inMod(q)&&(!m.dmax||q.d<=m.dmax));
  const ar=arene(globalMmr(st));const dw=q=>ar.diff[q.d-1]+.3;
- const w=m.weak?q=>{const R=(st[q.n]||{R:1000}).R;return Math.max(.2,Math.pow(1.012,1150-R))*dw(q)}:dw;
+ const w=m.weak?q=>{const R=(st[q.n]||{R:0}).R;return Math.max(.2,Math.pow(1.012,150-R))*dw(q)}:dw;
  begin({kind:'mode',titre:m.nom,qs:pick(pool,m.n,w)})}
 function startBoss(b){S.pendingBoss=b;S.screen='bossintro';render()}
 async function claimQuest(){const q=questDuJour();if(q.claimed||q.done<q.goal)return;const carte=tirerCarte(1,true,true,Date.now());
@@ -308,7 +370,7 @@ let timerId=null;
 function answer(given){if(S.answered)return;const q=S.m.qs[S.idx];let ok;
  if(q.t==='mc')ok=given===q.a;else ok=q.a.some(a=>strip(a)===strip(given));
  S.answered=true;S.last={ok,given};clearInterval(timerId);
- const cur=elo(allAnswers().concat(S.answers));const s=cur[q.n]||{R:1000,g:{}};const E=1/(1+Math.pow(10,(1000-s.R)/400));let g=40*((ok?1:0)-E);const d=(s.g||{})[today()]||0;if(g>0&&d>=100)g/=4;S.last.delta=Math.round(g);
+ const cur=elo(allAnswers().concat(S.answers));const s=cur[q.n]||{R:0,g:{}};const E=1/(1+Math.pow(10,(0-s.R)/400));let g=40*((ok?1:0)-E);const d=(s.g||{})[today()]||0;if(g>0&&d>=100)g/=4;g=Math.max(-s.R,g);S.last.delta=Math.round(g);
  S.answers.push({date:today(),seance:S.m.titre,question:'Q'+(S.idx+1),notion:q.n,correct:ok,given:q.t==='mc'?q.o[given]||'(temps écoulé)':given,attendu:q.t==='mc'?q.o[q.a]:q.a[0]});
  if(ok){S.combo++;S.best=Math.max(S.best,S.combo)}else{S.combo=0;if(S.m.kind==='boss')S.lives--}
  render();floatText((S.last.delta>=0?'+':'')+S.last.delta+' pts',ok);if(ok){S.combo>=3&&S.combo%3===0?SFX.combo():SFX.good()}else SFX.bad()}
@@ -338,7 +400,7 @@ let TITRE='';try{TITRE=localStorage.getItem('arene-titre')||''}catch(_){}
 function titreActuel(){const ok=succesOk();const t=SUCCES.find(x=>x.titre===TITRE&&ok.includes(x.id));return t?t.titre:(ok.length?SUCCES.find(x=>x.id===ok[ok.length-1]).titre:'Nouveau joueur')}
 function carteHtml(id,neuve){const c=CARTES.find(x=>x.id===id);if(!c)return '';const col=RARETES[c.r].c;return `<div class="carte pop" style="border-color:${col};box-shadow:0 0 24px ${col}44"><span class="label" style="color:${col}">${c.r}${neuve?' · NOUVELLE':''}</span><b>${esc(c.en)}</b><span>${esc(c.fr)}</span><i>${esc(c.ex)}</i></div>`}
 function areneBanner(g){const a=arene(g),i=ARENES.indexOf(a),nx=ARENES[i+1];const pct=nx?Math.max(3,Math.min(100,100*(g-a.min)/(nx.min-a.min))):100;
- return `<div class="arena"><span class="deco" aria-hidden="true">${a.deco}</span><div><span class="label" style="color:${a.acc}">Arène ${a.n}</span><b>${esc(a.nom)}</b><div class="bar" style="margin-top:6px"><div style="width:${pct}%;background:${a.acc}"></div></div><small>${nx?(Math.ceil(nx.min-g)+' pts avant '+esc(nx.nom)):'Arène maximum atteinte'} · questions ${['plutôt faciles','équilibrées','plus dures','difficiles','très dures','de haut niveau','d\'expert','de légende'][i]}</small></div></div>`}
+ return `<div class="arena"><span class="deco" aria-hidden="true">${a.deco}</span><div><span class="label" style="color:${a.acc}">Arène ${a.n}</span><b>${esc(a.nom)}</b><div class="bar" style="margin-top:6px"><div style="width:${pct}%;background:${a.acc}"></div></div><small>${nx?(Math.ceil(nx.min-g)+' pts avant '+esc(nx.nom)):'Arène maximum atteinte'} · questions ${['faciles','plutôt faciles','équilibrées','plus dures','difficiles','très dures','de haut niveau','d\'expert','de légende'][i]}</small></div></div>`}
 
 // ---- screens
 // ---- données du jour : objectif, quête, courbe
@@ -357,8 +419,10 @@ function sparkSvg(pts){const vs=pts.map(p=>p.v),lo=Math.min(...vs)-10,hi=Math.ma
  const jours=['D','L','M','M','J','V','S'];
  return `<svg viewBox="0 0 ${W} ${H+16}" width="100%" aria-label="Points sur 7 jours"><defs><linearGradient id="spk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--arena,#3d7bff)" stop-opacity=".35"/><stop offset="1" stop-color="var(--arena,#3d7bff)" stop-opacity="0"/></linearGradient></defs><path d="${line} L${x(pts.length-1)} ${H} L${x(0)} ${H} Z" fill="url(#spk)"/><path d="${line}" fill="none" stroke="var(--arena,#3d7bff)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${pts.map((p,i)=>`<circle cx="${x(i)}" cy="${y(p.v)}" r="${i===pts.length-1?4.5:p.n?3:2}" fill="${p.n?'var(--arena,#3d7bff)':'#4a5570'}"/><text x="${x(i)}" y="${H+13}" text-anchor="middle" font-size="10" fill="#8c98b3">${jours[new Date(p.d+'T12:00').getDay()]}</text>`).join('')}</svg>`}
 function ring(pct,label){const r=26,c=2*Math.PI*r;return `<svg viewBox="0 0 64 64" class="ring"><circle cx="32" cy="32" r="${r}" fill="none" stroke="#ffffff14" stroke-width="7"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="var(--gold)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(c*Math.min(1,pct)).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 32 32)"/><text x="32" y="37" text-anchor="middle" font-size="15" font-weight="800" fill="#e9eef8">${label}</text></svg>`}
+function routeHtml(g){const cur=ARENES.indexOf(arene(g));
+ return `<section class="card route"><div class="row2"><span class="label">🗺️ Route des arènes</span><small>Arène ${cur+1}/${ARENES.length}</small></div><div class="track" id="track">${ARENES.map((a,i)=>{const st=i<cur?'done':i===cur?'here':'lock';return `${i?`<span class="link ${i<=cur?'on':''}"></span>`:''}<div class="node ${st}" style="--ac:${a.acc}"><div class="thumb">${pxScene(i)}${st==='lock'?'<span class="lk">🔒</span>':''}${st==='done'?'<span class="ok">✓</span>':''}</div><b>${esc(a.nom.replace(/^(Le |La |L')/,''))}</b><small>${st==='here'?'TU ES ICI':a.min+' pts'}</small></div>`}).join('')}</div></section>`}
 function hero(g,cl,k){const a=arene(g),i=ARENES.indexOf(a),nx=ARENES[i+1];const pct=nx?Math.max(3,Math.min(100,100*(g-a.min)/(nx.min-a.min))):100;
- return `<section class="hero" style="--arena:${a.acc}"><div class="hero-sky"></div>${sceneFx(i)}${sceneSvg(i,a.acc)}
+ return `<section class="hero" style="--arena:${a.acc}"><div class="hero-sky"></div>${pxScene(i)}
  <div class="hero-top"><div class="hero-emb">${emb(g,cl)}</div><div class="who"><span class="label" style="color:${a.acc}">Arène ${a.n} · ${esc(a.nom)}</span><h1>${cl?k.label:'Placement'}</h1><small>« ${esc(titreActuel())} » · ${g} pts</small></div><button class="snd" data-act="son" aria-label="Activer ou couper le son">${SFX.muted?'🔇':'🔊'}</button></div>
  <div class="hero-bot"><div class="bar"><div style="width:${pct}%;background:${a.acc}"></div></div><small>${nx?Math.ceil(nx.min-g)+' pts avant '+esc(nx.nom):'Arène maximum atteinte'}</small></div></section>`}
 
@@ -368,32 +432,33 @@ function lobby(){const st=elo(allAnswers()),g=globalMmr(st),cl=Object.values(st)
  const ids=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id)&&st[id]&&st[id].n>0).sort((a,b)=>st[a].R-st[b].R);const pire=ids[0];
  const col=collection(),last=[...sessions].reverse().find(x=>x.carte);
  return `${hero(g,cl,k)}
+ ${routeHtml(g)}
  ${!ready?'<div class="card note">Connexion à ta progression…</div>':''}${saveErr?`<div class="card warn">${esc(saveErr)}</div>`:''}
  <div class="home">
  <div class="card daily"><div>${ring(tA/OBJECTIF,tA+'/'+OBJECTIF)}</div><div><span class="label">Objectif du jour</span><b>${tA>=OBJECTIF?'Objectif atteint ✓':'Encore '+(OBJECTIF-tA)+' questions'}</b><small>🔥 Série : <b>${s.serie} jour${s.serie>1?'s':''}</b> d'affilée</small></div></div>
  <div class="card quest ${q.done>=q.goal?'ok':''}"><span class="label" style="color:var(--gold)">⚔️ Quête du jour · ${MODS[MOD].nom}</span><b>Réussis ${q.goal} questions : ${esc(NOTIONS_NOMS[q.id])}</b><div class="bar"><div style="width:${100*q.done/q.goal}%;background:var(--gold)"></div></div>
-  <div class="row2"><small>${q.done}/${q.goal} · récompense : un coffre (carte rare ou mieux)</small>${q.claimed?'<span class="tag">Coffre obtenu ✓</span>':q.done>=q.goal?'<button class="go mini" data-act="claim">🎁 Ouvrir le coffre</button>':`<button class="go mini" data-notion="${q.id}">Jouer</button>`}</div></div>
+  <div class="row2"><small>${q.done}/${q.goal} · récompense : un coffre (carte rare ou mieux)</small>${q.claimed?'<span class="tag">Coffre obtenu ✓</span>':q.done>=q.goal?'<button class="go sm" data-act="claim">🎁 Ouvrir le coffre</button>':`<button class="go sm" data-notion="${q.id}">Jouer</button>`}</div></div>
  <div class="card"><div class="row2"><span class="label">Tes points · 7 jours</span><small>${s.questions} questions au total</small></div>${sparkSvg(courbe7())}</div>
- ${pire?`<div class="card revenge"><span class="label" style="color:var(--loss)">💢 Revanche</span><div class="row2"><div class="rv">${emb(st[pire].R,st[pire].n>=3)}<div><b>${esc(NOTIONS_NOMS[pire])}</b><small>${st[pire].n>=3?rang(st[pire].R).label:'Placement'} · ta notion la plus faible</small></div></div><button class="go mini" data-notion="${pire}">Revanche</button></div></div>`:''}
+ ${pire?`<div class="card revenge"><span class="label" style="color:var(--loss)">💢 Revanche</span><div class="row2"><div class="rv">${emb(st[pire].R,st[pire].n>=3)}<div><b>${esc(NOTIONS_NOMS[pire])}</b><small>${st[pire].n>=3?rang(st[pire].R).label:'Placement'} · ta notion la plus faible</small></div></div><button class="go sm" data-notion="${pire}">Revanche</button></div></div>`:''}
  <div class="card"><div class="row2"><span class="label">Collection</span><small>${col.size}/${CARTES.length} cartes</small></div><div class="bar" style="margin:8px 0 10px"><div style="width:${100*col.size/CARTES.length}%;background:#b05bff"></div></div>${last?carteHtml(last.carte,false):'<p class="note">Termine une session de 5 questions ou plus pour gagner ta première carte.</p>'}</div>
  </div>
  <button class="go big-play" data-act="jouer">⚔️ Jouer</button>`}
 
 // ---- écran Jouer
 function jouer(){const st=elo(allAnswers());
- const notions=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id)).map(id=>({id,R:(st[id]||{R:1000}).R,n:(st[id]||{n:0}).n}));
+ const notions=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id)).map(id=>({id,R:(st[id]||{R:0}).R,n:(st[id]||{n:0}).n}));
  return `<div class="jh"><span class="label">Matière</span><select class="modsel" id="modsel" aria-label="Matière">${Object.entries(MODS).map(([k2,m])=>`<option value="${k2}" ${k2===MOD?'selected':''}>${m.nom}</option>`).join('')}</select></div>
  <div class="lob"><div class="lob-b"><span class="label">Modes</span>
  <div class="modes">${MODES.map(m=>`<button class="mode" data-mode="${m.id}"><span class="ic" style="background:${m.col}22;color:${m.col}">${m.ic}</span><span><b>${m.nom}</b><span>${m.sub}</span></span><span class="t">${m.t}</span></button>`).join('')}</div>
  <span class="label">Boss</span>
- <div class="bosses">${BOSSES.filter(b=>(b.mod||'en')===MOD).map(b=>{const w=bossWins[b.id],L=BOSS_LOOK[b.id]||{emoji:'☠',col:'#ff5a6e'};return `<button class="bossc${w?' done':''}" data-boss="${b.id}" style="--bc:${L.col}"><span class="portrait">${L.emoji}</span><b>${esc(b.nom)}</b><small>${b.n} questions · ${'♥'.repeat(b.lives)} · ${b.time}s</small><span class="t">${w?'👑 Vaincu ×'+w:'≈ '+Math.round(b.n*b.time/60+2)+' min'}</span></button>`}).join('')}</div></div>
+ <div class="bosses">${BOSSES.filter(b=>(b.mod||'en')===MOD).map(b=>{const w=bossWins[b.id],L=BOSS_LOOK[b.id]||{emoji:'☠',col:'#ff5a6e'};return `<button class="bossc${w?' done':''}" data-boss="${b.id}" style="--bc:${L.col}"><span class="portrait">${pxBoss(b.id)}</span><b>${esc(b.nom)}</b><small>${b.n} questions · ${'♥'.repeat(b.lives)} · ${b.time}s</small><span class="t">${w?'👑 Vaincu ×'+w:'≈ '+Math.round(b.n*b.time/60+2)+' min'}</span></button>`}).join('')}</div></div>
  <div class="lob-c"><span class="label">Entraînement ciblé · 10 questions</span>
  <div class="chips">${notions.map(x=>`<button class="chip" data-notion="${x.id}">${emb(x.R,x.n>=3)}${esc(NOTIONS_NOMS[x.id])}</button>`).join('')}</div>
  <p class="note">Plus ton arène est haute, plus les questions des modes sont difficiles.</p></div></div>`}
 
 // ---- intro de boss
 function bossIntro(){const b=S.pendingBoss,L=BOSS_LOOK[b.id]||{emoji:'☠',col:'#ff5a6e',line:''};
- return `<div class="intro" style="--bc:${L.col}"><div class="portrait xl pop">${L.emoji}</div><span class="label" style="color:${L.col}">Boss</span><h2>${esc(b.nom)}</h2><p class="line">${esc(L.line)}</p>
+ return `<div class="intro" style="--bc:${L.col}"><div class="portrait xl pop">${pxBoss(b.id)}</div><span class="label" style="color:${L.col}">Boss</span><h2>${esc(b.nom)}</h2><p class="line">${esc(L.line)}</p>
  <div class="rules"><span>${b.n} questions</span><span>${'♥'.repeat(b.lives)} vies</span><span>⏱ ${b.time} s</span></div>
  <button class="go" data-act="fight">⚔️ Combattre</button><button class="quit" data-act="jouer">Fuir</button></div>`}
 
@@ -408,7 +473,7 @@ function profil(){const all=allAnswers(),st=elo(all),g=globalMmr(st),cl=Object.v
  let combo=0,c=0;all.slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0).forEach(a=>{c=a.correct?c+1:0;combo=Math.max(combo,c)});
  const wins=Object.values(bossWins).reduce((a,b)=>a+b,0);
  const stats=[['Questions',all.length],['Win rate',all.length?Math.round(100*ok/all.length)+' %':'—'],['Meilleur combo',combo],['Jours joués',jours.length],['Série',serie+' j'],['Boss vaincus',wins]];
- const ns=Object.keys(NOTIONS_NOMS).map(id=>({id,s:st[id]||{R:1000,n:0}})).sort((a,b)=>(b.s.n>0)-(a.s.n>0)||b.s.R-a.s.R);
+ const ns=Object.keys(NOTIONS_NOMS).map(id=>({id,s:st[id]||{R:0,n:0}})).sort((a,b)=>(b.s.n>0)-(a.s.n>0)||b.s.R-a.s.R);
  return `<div class="hud"><button class="quit" data-act="lobby">← Lobby</button><span class="label" style="flex:1;text-align:center">Mon profil · en direct</span><a class="quit" href="progression.html" style="text-decoration:none">📈 Progression</a></div>
  <div class="card res-h">${emb(g,cl)}<span class="big" style="font-size:1.6rem">${cl?rang(g).label:'Placement'}</span><span class="pts">${g} pts</span></div>
  <div class="grid6">${stats.map(([l,v])=>`<div class="card"><span class="label">${l}</span><div class="pts" style="font-size:1.3rem">${v}</div></div>`).join('')}</div>
@@ -417,12 +482,12 @@ function profil(){const all=allAnswers(),st=elo(all),g=globalMmr(st),cl=Object.v
  <div class="card"><span class="label">Titre affiché · touche pour changer</span><div class="chips" style="margin-top:8px">${SUCCES.filter(x=>succesOk().includes(x.id)).map(x=>`<button class="chip" data-titre="${esc(x.titre)}" ${x.titre===titreActuel()?'style="border-color:var(--gold);color:var(--gold)"':''}>${esc(x.titre)}</button>`).join('')||'<span class="note">Débloque un succès pour gagner ton premier titre.</span>'}</div></div>
  <div class="card"><span class="label">Succès · ${succesOk().length}/${SUCCES.length}</span><div class="list">${SUCCES.map(x=>{const ok=succesOk().includes(x.id);return `<div class="li" style="grid-template-columns:28px 1fr;opacity:${ok?1:.45}"><span style="font-size:1.2rem">${ok?'🏆':'🔒'}</span><div>${esc(x.nom)}<small>${esc(x.desc)} · titre « ${esc(x.titre)} »</small></div></div>`}).join('')}</div></div>
  <div class="card"><span class="label">Collection · ${collection().size}/${CARTES.length} cartes</span><div class="album">${CARTES.map(c=>collection().has(c.id)?`<div class="mini" style="border-color:${RARETES[c.r].c}"><b>${esc(c.en)}</b><small>${esc(c.fr)}</small></div>`:`<div class="mini lock" style="border-color:${RARETES[c.r].c}55"><b>?</b><small>${c.r}</small></div>`).join('')}</div></div>
- <div class="card"><span class="label">Les arènes</span><div class="list">${ARENES.map(a=>`<div class="li" style="grid-template-columns:28px 1fr auto;opacity:${g>=a.min?1:.5}"><span style="font-size:1.2rem">${a.deco}</span><div>${a.n}. ${esc(a.nom)}</div><small>${a.min} pts</small></div>`).join('')}</div></div>
+ ${routeHtml(g)}
  <button class="quit" data-act="logout" style="align-self:center">Se déconnecter</button>`}
 
 function match(){const m=S.m,q=m.qs[S.idx],boss=m.kind==='boss';
  let head=`<div class="hud"><button class="quit" data-act="quit">✕ Abandon</button><div class="bar"><div style="width:${100*S.idx/m.qs.length}%"></div></div><span class="combo">${S.combo>=2?'🔥 ×'+S.combo:''}</span></div>`;
- if(boss){const hp=100*(1-S.answers.filter(a=>a.correct).length/m.qs.length);const L=BOSS_LOOK[m.boss.id]||{emoji:'☠',col:'#ff5a6e'};head+=`<div class="bossbar card" style="--bc:${L.col}"><div class="row"><span class="bname"><span class="portrait sm ${S.answered&&S.last.ok?'hit':''}">${L.emoji}</span>${esc(m.boss.nom)}</span><span class="lives">${'♥'.repeat(Math.max(0,S.lives))}${'♡'.repeat(m.boss.lives-Math.max(0,S.lives))}</span></div><div class="hp"><div style="width:${hp}%"></div></div><div class="row note"><span>PV du boss</span><span class="timer" id="timer"></span></div></div>`}
+ if(boss){const hp=100*(1-S.answers.filter(a=>a.correct).length/m.qs.length);const L=BOSS_LOOK[m.boss.id]||{emoji:'☠',col:'#ff5a6e'};head+=`<div class="bossbar card" style="--bc:${L.col}"><div class="row"><span class="bname"><span class="portrait sm ${S.answered&&S.last.ok?'hit':''}">${pxBoss(m.boss.id)}</span>${esc(m.boss.nom)}</span><span class="lives">${'♥'.repeat(Math.max(0,S.lives))}${'♡'.repeat(m.boss.lives-Math.max(0,S.lives))}</span></div><div class="hp"><div style="width:${hp}%"></div></div><div class="row note"><span>PV du boss</span><span class="timer" id="timer"></span></div></div>`}
  let body=`<div class="meta"><span>Question ${S.idx+1}/${m.qs.length}</span><span>${esc(NOTIONS_NOMS[q.n])} · ${'★'.repeat(q.d)}</span></div><div class="q pop">${esc(q.q)}</div>`;
  if(q.t==='mc')body+=`<div class="opts">${q.o.map((o,i)=>{let c='';if(S.answered){if(i===q.a)c=' good';else if(i===S.last.given)c=' bad'}return `<button class="opt${c}" data-opt="${i}" ${S.answered?'disabled':''}><kbd>${i+1}</kbd>${esc(o)}</button>`}).join('')}</div>`;
  else body+=`<form class="fill" id="fillf"><input id="fillin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Écris ta réponse" ${S.answered?'disabled':''} value="${S.answered?esc(S.last.given):''}" aria-label="Ta réponse"><button class="go" ${S.answered?'hidden':''}>Valider</button></form>`;
@@ -431,15 +496,15 @@ function match(){const m=S.m,q=m.qs[S.idx],boss=m.kind==='boss';
  return head+body}
 
 function results(){const m=S.m,boss=m.kind==='boss',ok=S.answers.filter(a=>a.correct).length,tot=S.answers.length;
- if(m.kind==='quete')return `<div class="card res-h"><span class="label" style="color:var(--gold)">⚔️ Quête du jour accomplie</span><span class="big">Bien joué !</span></div><div class="card" style="text-align:center"><span class="label">🎁 Coffre de quête</span>${S.chestOpen?carteHtml(S.carte,S.carteNeuve):`<button class="chest" data-act="chest"><span class="chest-ic">🎁</span><b>Touche pour ouvrir le coffre</b></button>`}</div><p class="save">${esc(S.saving||'')}</p><button class="go" data-act="lobby">Retour à l'accueil</button>`;
- const ov=S.showArena?(()=>{const a=arene(globalMmr(elo(allAnswers().concat(S.answers)))),i=ARENES.indexOf(a);return `<div class="overlay" style="--arena:${a.acc}"><div class="ov-card pop"><div class="hero ov-hero"><div class="hero-sky"></div>${sceneFx(i)}${sceneSvg(i,a.acc)}</div><span class="label" style="color:${a.acc}">Nouvelle arène débloquée</span><h2>${a.deco} ${esc(a.nom)}</h2><p class="note">Les questions deviennent plus difficiles. Le décor de l'app change.</p><button class="go" data-act="closeov">Entrer dans l'arène</button></div></div>`})():'';
+ if(m.kind==='quete')return `<div class="card res-h"><span class="label" style="color:var(--gold)">⚔️ Quête du jour accomplie</span><span class="big">Bien joué !</span></div><div class="card" style="text-align:center"><span class="label">🎁 Coffre de quête</span>${S.chestOpen?carteHtml(S.carte,S.carteNeuve):`<button class="chest" data-act="chest"><span class="chest-ic">${pxChest(false)}</span><b>Touche pour ouvrir le coffre</b></button>`}</div><p class="save">${esc(S.saving||'')}</p><button class="go" data-act="lobby">Retour à l'accueil</button>`;
+ const ov=S.showArena?(()=>{const a=arene(globalMmr(elo(allAnswers().concat(S.answers)))),i=ARENES.indexOf(a);return `<div class="overlay" style="--arena:${a.acc}"><div class="ov-card pop"><div class="hero ov-hero"><div class="hero-sky"></div>${pxScene(i)}</div><span class="label" style="color:${a.acc}">Nouvelle arène débloquée</span><h2>${a.deco} ${esc(a.nom)}</h2><p class="note">Les questions deviennent plus difficiles. Le décor de l'app change.</p><button class="go" data-act="closeov">Entrer dans l'arène</button></div></div>`})():'';
  const before=S.before,after=elo(allAnswers().concat(S.answers));const gB=globalMmr(before),gA=globalMmr(after);
- const touched=[...new Set(S.answers.map(a=>a.notion))].map(id=>({id,b:(before[id]||{R:1000,n:0}),a:after[id]}));
+ const touched=[...new Set(S.answers.map(a=>a.notion))].map(id=>({id,b:(before[id]||{R:0,n:0}),a:after[id]}));
  const title=boss?(S.won?'VICTOIRE':'DÉFAITE'):'Session terminée';const clA=Object.values(after).some(x=>x.n>=3);
  return `<div class="card res-h">${emb(gA,clA)}<span class="label">${esc(m.titre)}</span><span class="big" style="color:${boss?(S.won?'var(--gold)':'var(--loss)'):'var(--fg)'}">${title}</span><span>${ok}/${tot} bonnes · meilleur combo ${S.best}</span><span class="pts ${gA-gB>=0?'up':'down'}">Rang global : ${gA-gB>=0?'+':''}${gA-gB} pts → ${clA?rang(gA).label:'Placement'}</span></div>
  <div class="card"><span class="label">Points par notion</span><div class="list">${touched.map(t=>{const d=Math.round(t.a.R-t.b.R),up=t.a.n>=3&&(t.b.n<3||rang(t.a.R).label!==rang(t.b.R).label)&&t.a.R>t.b.R;return `<div class="li">${emb(t.a.R,t.a.n>=3)}<div>${esc(NOTIONS_NOMS[t.id])}<small>${t.a.n>=3?rang(t.a.R).label:'Placement '+t.a.n+'/3'} · ${Math.round(t.a.R)} pts ${up?'<span class="rankup">▲ RANG SUPÉRIEUR</span>':''}</small></div><span class="pts ${d>=0?'up':'down'}">${d>=0?'+':''}${d}</span></div>`}).join('')}</div></div>
  ${S.answers.some(a=>!a.correct)?`<div class="card"><span class="label">Tes erreurs</span><div class="list">${S.answers.map((a,i)=>a.correct?'':`<div class="li" style="grid-template-columns:1fr"><div>${esc(m.qs[i].q)}<small>Toi : ${esc(a.given||'—')} · Réponse : ${esc(a.attendu)}</small><small>${esc(m.qs[i].x)}</small></div></div>`).join('')}</div></div>`:''}
- ${S.carte?`<div class="card" style="text-align:center"><span class="label">🎁 Butin de la session</span>${S.chestOpen?carteHtml(S.carte,S.carteNeuve):`<button class="chest" data-act="chest" aria-label="Ouvrir le coffre"><span class="chest-ic">🎁</span><b>Touche pour ouvrir le coffre</b></button>`}</div>`:(tot&&tot<5?'<p class="note" style="text-align:center">Réponds à 5 questions ou plus pour gagner une carte.</p>':'')}
+ ${S.carte?`<div class="card" style="text-align:center"><span class="label">🎁 Butin de la session</span>${S.chestOpen?carteHtml(S.carte,S.carteNeuve):`<button class="chest" data-act="chest" aria-label="Ouvrir le coffre"><span class="chest-ic">${pxChest(false)}</span><b>Touche pour ouvrir le coffre</b></button>`}</div>`:(tot&&tot<5?'<p class="note" style="text-align:center">Réponds à 5 questions ou plus pour gagner une carte.</p>':'')}
  ${(S.succesNew||[]).map(id=>{const x=SUCCES.find(s=>s.id===id);return `<div class="card pop" style="border-color:var(--gold)"><span class="label" style="color:var(--gold)">🏆 Succès débloqué</span><b style="display:block">${esc(x.nom)}</b><span class="note">${esc(x.desc)} · nouveau titre : « ${esc(x.titre)} »</span></div>`}).join('')}
  ${(()=>{const a1=arene(gB),a2=arene(gA);return a2.n>a1.n?`<div class="card pop" style="border-color:${a2.acc};text-align:center"><span class="label" style="color:${a2.acc}">Nouvelle arène débloquée</span><div style="font-size:2.2rem">${a2.deco}</div><b>${esc(a2.nom)}</b><p class="note">Les questions deviennent plus difficiles.</p></div>`:''})()}
  <p class="save">${esc(S.saving||'')}</p><button class="go" data-act="lobby">Retour à l'accueil</button>${ov}`}
@@ -448,6 +513,7 @@ function render(){const app=document.getElementById('app');clearInterval(timerId
  const ar=arene(globalMmr(elo(allAnswers())));document.body.style.background=ar.bg;document.body.style.backgroundAttachment='fixed';document.documentElement.style.setProperty('--arena',ar.acc);
  const V={login:loginScreen,lobby,jouer,profil,bossintro:bossIntro,match,results};
  app.className='app m-'+S.screen;app.innerHTML=(V[S.screen]||lobby)()+(['lobby','jouer','profil'].includes(S.screen)?tabbar():'');
+ const tr=document.getElementById('track');if(tr){const h=tr.querySelector('.here');if(h)tr.scrollLeft=h.offsetLeft-tr.clientWidth/2+46}
  const ms=document.getElementById('modsel');if(ms)ms.onchange=()=>{MOD=ms.value;try{localStorage.setItem('arene-mod',MOD)}catch(_){}render()};
  if(S.screen==='login'){document.getElementById('loginf').onsubmit=async e=>{e.preventDefault();const m=document.getElementById('loginmsg');try{await Data.login(document.getElementById('email').value.trim());m.textContent='Lien envoyé ✓ Ouvre ta boîte mail sur cet appareil.'}catch(err){m.textContent='Envoi impossible : '+(err.message||'réessaie dans une minute.')}}}
  if(S.screen==='match'){const f=document.getElementById('fillf');if(f){f.onsubmit=e=>{e.preventDefault();const v=document.getElementById('fillin').value;if(v.trim())answer(v)};if(!S.answered)document.getElementById('fillin').focus()}
