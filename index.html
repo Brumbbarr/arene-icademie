@@ -320,7 +320,7 @@ const strip=s=>norm(s).replace(/[.!?]+$/,'');
 // ---- Elo, same rules as the dashboard
 function elo(answers){const st={};const sorted=answers.map((r,k)=>({...r,k})).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.k-b.k);
  sorted.forEach(r=>{const s=st[r.notion]=st[r.notion]||{R:0,n:0,g:{}};const E=1/(1+Math.pow(10,(0-s.R)/400));let g=40*((r.correct?1:0)-E);const d=s.g[r.date]||0;if(g>0&&d>=100)g/=4;s.g[r.date]=d+g;s.R=Math.max(0,s.R+g);s.n++});return st}
-function globalMmr(st){const cl=Object.values(st).filter(x=>x.n>=3);return cl.length?Math.round(cl.reduce((a,x)=>a+x.R,0)/cl.length):0}
+function globalMmr(st){const cl=Object.values(st).filter(x=>x.n>=3);return cl.length?Math.round(cl.reduce((a,x)=>a+Math.round(x.R),0)/cl.length):0}
 
 // ---- state
 let db=null,col=null,base=[],sessions=[],bossWins={},ready=false,saveErr='';
