@@ -89,6 +89,27 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .mini{border:1px solid;border-radius:8px;padding:8px;font-size:.78rem;display:flex;flex-direction:column;gap:2px;min-height:4.2rem}
 .mini small{color:var(--mut);font-size:.7rem}
 .mini.lock{align-items:center;justify-content:center;color:var(--mut)}
+.lob,.lob-a,.lob-b,.lob-c{display:flex;flex-direction:column;gap:14px;min-width:0}
+.keys,.opt kbd{display:none}
+/* Version PC : écran large, deux colonnes, raccourcis clavier */
+@media (min-width:960px){
+ .app{max-width:76rem;padding-block:28px 48px}
+ .lob{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);grid-template-areas:"a b" "c b";gap:20px 28px;align-items:start}
+ .lob-a{grid-area:a}.lob-b{grid-area:b}.lob-c{grid-area:c}
+ .modes{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .mode{padding:16px}
+ .mode:hover,.chip:hover,.opt:hover:not(:disabled){border-color:var(--arena,var(--acc));cursor:pointer}
+ .app.m-match,.app.m-results{max-width:52rem}
+ .q{font-size:1.45rem}
+ .opts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .opt{padding:16px 18px;font-size:1.05rem}
+ .opt kbd,.keys{display:inline-block}
+ .opt kbd{font:700 .75rem var(--font);border:1px solid var(--line);border-radius:5px;padding:1px 6px;margin-right:10px;color:var(--mut)}
+ .keys{color:var(--mut);font-size:.8rem;text-align:center}
+ .grid6{grid-template-columns:repeat(6,minmax(0,1fr))}
+ .app.m-profil{max-width:64rem}
+ .album{grid-template-columns:repeat(auto-fill,minmax(10rem,1fr))}
+}
 .seg{display:flex;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px;gap:4px}
 .seg button{flex:1 1 auto;white-space:nowrap;background:none;border:0;border-radius:7px;padding:9px;font-weight:800;color:var(--mut)}
 .seg button[aria-pressed="true"]{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff}
@@ -215,18 +236,18 @@ function areneBanner(g){const a=arene(g),i=ARENES.indexOf(a),nx=ARENES[i+1];cons
 // ---- screens
 function lobby(){const st=elo(allAnswers()),g=globalMmr(st),cl=Object.values(st).some(x=>x.n>=3),k=rang(g);
  const notions=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id)).map(id=>({id,R:(st[id]||{R:1000}).R,n:(st[id]||{n:0}).n}));
- return `<header class="top">${emb(g,cl)}<div class="who"><h1>Arène Icademie</h1><small>« ${esc(titreActuel())} » · ${sessions.length} session(s)</small></div><div class="mmr">${cl?k.label:'Placement'}<small>${g} pts</small></div></header>
+ return `<div class="lob"><div class="lob-a"><header class="top">${emb(g,cl)}<div class="who"><h1>Arène Icademie</h1><small>« ${esc(titreActuel())} » · ${sessions.length} session(s)</small></div><div class="mmr">${cl?k.label:'Placement'}<small>${g} pts</small></div></header>
  ${areneBanner(g)}
  <div class="seg" role="group" aria-label="Matière">${Object.entries(MODS).map(([k2,m])=>`<button data-mod="${k2}" aria-pressed="${k2===MOD}">${m.nom}</button>`).join('')}</div>
  <nav class="nav2"><button data-act="profil">📊 Mon profil</button><a href="progression.html">📈 Progression</a></nav>
- ${!ready?'<div class="card note">Connexion à ta progression…</div>':''}${saveErr?`<div class="card warn">${esc(saveErr)}</div>`:''}
+ ${!ready?'<div class="card note">Connexion à ta progression…</div>':''}${saveErr?`<div class="card warn">${esc(saveErr)}</div>`:''}</div><div class="lob-b">
  <span class="label">Jouer</span>
  <div class="modes">${MODES.map(m=>`<button class="mode" data-mode="${m.id}"><span class="ic" style="background:${m.col}22;color:${m.col}">${m.ic}</span><span><b>${m.nom}</b><span>${m.sub}</span></span><span class="t">${m.t}</span></button>`).join('')}</div>
  <span class="label">Boss</span>
  <div class="modes">${BOSSES.filter(b=>(b.mod||'en')===MOD).map(b=>{const w=bossWins[b.id];return `<button class="mode boss${w?' done':''}" data-boss="${b.id}"><span class="ic">☠</span><span><b>${esc(b.nom)}</b><span>${esc(b.sub)} · ${b.n} questions · ${'♥'.repeat(b.lives)} · ${b.time}s par question</span></span><span class="t">${w?'Vaincu ×'+w:'≈ '+Math.round(b.n*b.time/60+2)+' min'}</span></button>`}).join('')}</div>
- <span class="label">Entraînement ciblé · 10 questions</span>
+</div><div class="lob-c"><span class="label">Entraînement ciblé · 10 questions</span>
  <div class="chips">${notions.map(x=>`<button class="chip" data-notion="${x.id}">${emb(x.R,x.n>=3)}${esc(NOTIONS_NOMS[x.id])}</button>`).join('')}</div>
- <p class="note">Les points suivent les mêmes règles que ton tableau de bord : 1000 au départ, +/− selon tes réponses, gains divisés par 4 au-delà de +100 par jour sur une notion.</p>`}
+ <p class="note">Les points suivent les mêmes règles que ton tableau de bord : 1000 au départ, +/− selon tes réponses, gains divisés par 4 au-delà de +100 par jour sur une notion.</p></div></div>`}
 
 function loginScreen(){return `<header class="top"><div class="who"><h1>Arène Icademie</h1><small>Connecte-toi pour retrouver tes rangs</small></div></header>
  <form class="card fill" id="loginf"><span class="label">Connexion par e-mail</span><input id="email" type="email" autocomplete="email" placeholder="ton.email@exemple.com" required aria-label="E-mail"><button class="go">Recevoir mon lien de connexion</button><p class="note" id="loginmsg">Tu reçois un lien par e-mail : clique dessus sur ce téléphone, et tu restes connecté.</p></form>`}
@@ -252,9 +273,10 @@ function match(){const m=S.m,q=m.qs[S.idx],boss=m.kind==='boss';
  let head=`<div class="hud"><button class="quit" data-act="quit">✕ Abandon</button><div class="bar"><div style="width:${100*S.idx/m.qs.length}%"></div></div><span class="combo">${S.combo>=2?'🔥 ×'+S.combo:''}</span></div>`;
  if(boss){const hp=100*(1-S.answers.filter(a=>a.correct).length/m.qs.length);head+=`<div class="bossbar card"><div class="row"><span>☠ ${esc(m.boss.nom)}</span><span class="lives">${'♥'.repeat(Math.max(0,S.lives))}${'♡'.repeat(m.boss.lives-Math.max(0,S.lives))}</span></div><div class="hp"><div style="width:${hp}%"></div></div><div class="row note"><span>PV du boss</span><span class="timer" id="timer"></span></div></div>`}
  let body=`<div class="meta"><span>Question ${S.idx+1}/${m.qs.length}</span><span>${esc(NOTIONS_NOMS[q.n])} · ${'★'.repeat(q.d)}</span></div><div class="q pop">${esc(q.q)}</div>`;
- if(q.t==='mc')body+=`<div class="opts">${q.o.map((o,i)=>{let c='';if(S.answered){if(i===q.a)c=' good';else if(i===S.last.given)c=' bad'}return `<button class="opt${c}" data-opt="${i}" ${S.answered?'disabled':''}>${esc(o)}</button>`}).join('')}</div>`;
+ if(q.t==='mc')body+=`<div class="opts">${q.o.map((o,i)=>{let c='';if(S.answered){if(i===q.a)c=' good';else if(i===S.last.given)c=' bad'}return `<button class="opt${c}" data-opt="${i}" ${S.answered?'disabled':''}><kbd>${i+1}</kbd>${esc(o)}</button>`}).join('')}</div>`;
  else body+=`<form class="fill" id="fillf"><input id="fillin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Écris ta réponse" ${S.answered?'disabled':''} value="${S.answered?esc(S.last.given):''}" aria-label="Ta réponse"><button class="go" ${S.answered?'hidden':''}>Valider</button></form>`;
  if(S.answered){const ok=S.last.ok;body+=`<div class="fb ${ok?'good':'bad'} ${ok?'pop':'shake'}"><b>${ok?'Bien joué !':'Raté'} <span class="pts ${S.last.delta>=0?'up':'down'}">${S.last.delta>=0?'+':''}${S.last.delta} pts</span></b>${!ok?`Réponse : <b style="display:inline">${esc(q.t==='mc'?q.o[q.a]:q.a[0])}</b><br>`:''}${esc(q.x)}</div><button class="go" data-act="next">${S.idx+1>=m.qs.length||(boss&&S.lives<=0)?'Voir le résultat':'Suivant'}</button>`}
+ body+=`<p class="keys">Clavier : ${q.t==='mc'?'1 à '+q.o.length+' pour répondre · ':''}Entrée pour valider / passer à la suite · Échap pour abandonner</p>`;
  return head+body}
 
 function results(){const m=S.m,boss=m.kind==='boss',ok=S.answers.filter(a=>a.correct).length,tot=S.answers.length;
@@ -271,7 +293,7 @@ function results(){const m=S.m,boss=m.kind==='boss',ok=S.answers.filter(a=>a.cor
 
 function render(){const app=document.getElementById('app');clearInterval(timerId);
  const ar=arene(globalMmr(elo(allAnswers())));document.body.style.background=ar.bg;document.body.style.backgroundAttachment='fixed';document.documentElement.style.setProperty('--arena',ar.acc);
- app.innerHTML=S.screen==='login'?loginScreen():S.screen==='lobby'?lobby():S.screen==='profil'?profil():S.screen==='match'?match():results();
+ app.className='app m-'+S.screen;app.innerHTML=S.screen==='login'?loginScreen():S.screen==='lobby'?lobby():S.screen==='profil'?profil():S.screen==='match'?match():results();
  if(S.screen==='login'){document.getElementById('loginf').onsubmit=async e=>{e.preventDefault();const m=document.getElementById('loginmsg');try{await Data.login(document.getElementById('email').value.trim());m.textContent='Lien envoyé ✓ Ouvre ta boîte mail sur cet appareil.'}catch(err){m.textContent='Envoi impossible : '+(err.message||'réessaie dans une minute.')}}}
  if(S.screen==='match'){const f=document.getElementById('fillf');if(f){f.onsubmit=e=>{e.preventDefault();const v=document.getElementById('fillin').value;if(v.trim())answer(v)};if(!S.answered)document.getElementById('fillin').focus()}
   if(S.m.kind==='boss'&&!S.answered){let left=S.m.boss.time;const el=document.getElementById('timer');const tick=()=>{if(el){el.textContent='⏱ '+left+' s';el.classList.toggle('low',left<=8)}if(left--<=0){const q=S.m.qs[S.idx];answer(q.t==='mc'?-1:'')}};tick();timerId=setInterval(tick,1000)}}
@@ -289,6 +311,11 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
  else if(b.dataset.act==='logout'){Data.logout().then(()=>location.reload())}
  else if(b.dataset.mod){MOD=b.dataset.mod;try{localStorage.setItem('arene-mod',MOD)}catch(_){}render()}});
 
+// ---- raccourcis clavier (PC)
+document.addEventListener('keydown',e=>{if(S.screen!=='match'||e.ctrlKey||e.altKey||e.metaKey)return;const q=S.m.qs[S.idx];const typing=document.activeElement&&document.activeElement.id==='fillin';
+ if(e.key==='Escape'){const b=document.querySelector('[data-act=quit]');if(b)b.click();return}
+ if(e.key==='Enter'&&S.answered){e.preventDefault();const b=document.querySelector('[data-act=next]');if(b)b.click();return}
+ if(!S.answered&&q.t==='mc'&&!typing&&/^[1-9]$/.test(e.key)){const i=+e.key-1;if(i<q.o.length){e.preventDefault();answer(i)}}});
 // ---- deep link from the dashboard: #n-<notion id>
 let linked=false;
 function fromHash(){const h=location.hash.slice(1);if(h.startsWith('n-')&&NOTIONS_NOMS[h.slice(2)]&&S.screen!=='match'){linked=true;startNotion(h.slice(2))}}
