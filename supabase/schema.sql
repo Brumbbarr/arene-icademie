@@ -62,3 +62,8 @@ create policy "mes reponses" on public.reponses for all using (auth.uid() = user
 
 drop policy if exists "mon profil" on public.profil;
 create policy "mon profil" on public.profil for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Droits d'accès pour le site (Supabase ne les donne plus par défaut)
+grant usage on schema public to anon, authenticated;
+grant select on public.notions to anon, authenticated;
+grant select, insert, update, delete on public.sessions, public.reponses, public.profil to authenticated;
