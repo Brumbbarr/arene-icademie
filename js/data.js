@@ -37,6 +37,7 @@
       const id = crypto.randomUUID();
       const { error } = await sb.from('sessions').insert({ id, at: doc.at, date: doc.date, mode: doc.mode, titre: doc.titre, boss: doc.boss, victoire: doc.victoire, combo: doc.combo, carte: doc.carte });
       if (error) throw error;
+      if (!doc.reponses.length) return id;
       const rows = doc.reponses.map((r) => ({ session_id: id, date: r.date, seance: r.seance, question: r.question, notion: r.notion, correct: r.correct, given: r.given, attendu: r.attendu }));
       const { error: e2 } = await sb.from('reponses').insert(rows);
       if (e2) { await sb.from('sessions').delete().eq('id', id); throw e2; }

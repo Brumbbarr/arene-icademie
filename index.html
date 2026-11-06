@@ -92,6 +92,82 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .mini.lock{align-items:center;justify-content:center;color:var(--mut)}
 .lob,.lob-a,.lob-b,.lob-c{display:flex;flex-direction:column;gap:14px;min-width:0}
 .keys,.opt kbd{display:none}
+/* ---- Habillage : héros d'arène, accueil vivant, barre d'onglets, boss, coffre */
+.app.m-lobby,.app.m-jouer,.app.m-profil{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.hero{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--arena,var(--line));min-height:210px;display:flex;flex-direction:column;justify-content:space-between;background:#0008;box-shadow:0 10px 40px #0007}
+.hero-sky{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--arena) 35%,transparent),transparent 70%)}
+.hero .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:62%;opacity:.95}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:24%;background:#0006;z-index:0}
+.hero-top{position:relative;z-index:1;display:flex;gap:12px;align-items:center;padding:14px}
+.hero-emb svg{width:74px;height:74px;filter:drop-shadow(0 4px 10px #0009)}
+.hero h1{font-size:1.7rem;font-weight:900;text-shadow:0 2px 8px #000}
+.hero .who small{color:#d7def0;text-shadow:0 1px 4px #000}
+.snd{margin-left:auto;align-self:flex-start;background:#0007;border:1px solid var(--line);border-radius:999px;width:38px;height:38px;font-size:1rem}
+.hero-bot{position:relative;z-index:1;padding:12px 14px;background:linear-gradient(transparent,#000c)}
+.hero-bot small{color:#d7def0;font-size:.75rem}
+.fx{position:absolute;inset:0;pointer-events:none}
+.fx i{position:absolute;top:-10px;width:5px;height:5px;border-radius:50%;background:#e8f7ff;opacity:.8}
+.fx-spark i{background:var(--arena);width:3px;height:3px;box-shadow:0 0 6px var(--arena)}
+.fx-gold i{background:#ffcf5a;width:4px;height:4px;box-shadow:0 0 8px #ffcf5a}
+.home{display:grid;gap:12px}
+.daily{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:center}
+.daily>div>b{display:block;font-size:1.05rem;margin:2px 0}
+.daily small{color:var(--mut)}
+.ring{width:72px;height:72px}
+.quest{border-color:#6b5520;background:linear-gradient(135deg,#2a2008,var(--panel) 70%)}
+.quest.ok{box-shadow:0 0 0 1px var(--gold),0 0 24px #ffcf5a33}
+.quest b{display:block;margin:4px 0 8px}
+.row2{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.row2 small{color:var(--mut);font-size:.78rem}
+.go.mini{padding:8px 14px;font-size:.85rem;flex:none;width:auto;align-self:center}
+.tag{font-size:.75rem;font-weight:800;color:var(--gold)}
+.revenge{border-color:#5a2130}
+.rv{display:flex;gap:10px;align-items:center}.rv svg{width:44px;height:44px}.rv small{display:block;color:var(--mut);font-size:.75rem}
+.big-play{font-size:1.15rem;padding:16px;box-shadow:0 8px 30px #3d7bff55}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);background:#0b1120f2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px))}
+.tabbar button,.tabbar a{background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.7rem;font-weight:700;padding:6px 0;text-decoration:none;border-radius:10px}
+.tabbar span{font-size:1.3rem}
+.tabbar .on{color:#fff;background:#ffffff0d}
+.jh{display:flex;align-items:center;gap:10px}
+.modsel{flex:1;font:inherit;font-weight:800;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+.bosses{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));gap:10px}
+.bossc{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:14px 10px;border-radius:14px;border:1px solid color-mix(in srgb,var(--bc) 45%,var(--line));background:radial-gradient(100% 70% at 50% 0%,color-mix(in srgb,var(--bc) 25%,transparent),var(--panel) 75%);color:var(--fg)}
+.bossc b{font-size:.88rem;line-height:1.2}.bossc small{color:var(--mut);font-size:.72rem}.bossc .t{font-size:.72rem;font-weight:800;color:var(--mut)}
+.bossc.done{box-shadow:0 0 0 1px var(--gold)}.bossc.done .t{color:var(--gold)}
+.portrait{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;font-size:2rem;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--bc) 60%,#fff 10%),color-mix(in srgb,var(--bc) 30%,#000));box-shadow:0 0 18px color-mix(in srgb,var(--bc) 50%,transparent)}
+.portrait.sm{width:30px;height:30px;font-size:1rem;margin-right:8px;flex:none}
+.portrait.xl{width:130px;height:130px;font-size:4.2rem}
+.bname{display:flex;align-items:center}
+.intro{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:30px 10px}
+.intro h2{font-size:1.7rem;font-weight:900}
+.intro .line{font-style:italic;color:#d7def0;max-width:26rem}
+.intro .rules{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.intro .rules span{border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.85rem;background:var(--panel)}
+.intro .go{width:100%;max-width:22rem}
+.chest{background:none;border:0;color:var(--fg);display:flex;flex-direction:column;align-items:center;gap:6px;margin:10px auto;padding:10px}
+.chest-ic{font-size:4rem;display:block}
+.overlay{position:fixed;inset:0;z-index:30;background:#000c;display:grid;place-items:center;padding:20px}
+.ov-card{max-width:26rem;width:100%;text-align:center;display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1px solid var(--arena);border-radius:18px;padding:14px;box-shadow:0 0 60px color-mix(in srgb,var(--arena) 40%,transparent)}
+.ov-hero{min-height:170px}
+.floaty{position:fixed;left:50%;top:42%;transform:translate(-50%,0);font-size:1.8rem;font-weight:900;z-index:40;pointer-events:none;text-shadow:0 2px 10px #000}
+@media (prefers-reduced-motion:no-preference){
+ .fx-snow i,.fx-gold i{animation:fall linear infinite}
+ .fx-spark i{animation:rise linear infinite;top:auto;bottom:-6px}
+ @keyframes fall{to{transform:translateY(230px)}}
+ @keyframes rise{to{transform:translateY(-230px);opacity:0}}
+ .floaty{animation:floaty 1.1s ease-out forwards}
+ @keyframes floaty{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}20%{opacity:1;transform:translate(-50%,0) scale(1.15)}100%{opacity:0;transform:translate(-50%,-70px) scale(1)}}
+ body.flash-good::after,body.flash-bad::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:35;animation:flash .45s ease-out forwards}
+ body.flash-good::after{background:radial-gradient(circle,#34d27b33,transparent 70%)}
+ body.flash-bad::after{background:radial-gradient(circle,#ff5a6e33,transparent 70%)}
+ @keyframes flash{from{opacity:1}to{opacity:0}}
+ .chest-ic{animation:wobble 1.2s ease-in-out infinite}
+ @keyframes wobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg) scale(1.05)}75%{transform:rotate(8deg) scale(1.05)}}
+ .portrait.hit{animation:shake .35s}
+ .portrait.xl{animation:pop .5s ease-out,float 3s ease-in-out .5s infinite}
+ @keyframes float{50%{transform:translateY(-6px)}}
+ .quest.ok .go{animation:pulse 1.2s ease-in-out infinite}
+ @keyframes pulse{50%{box-shadow:0 0 0 6px #ffcf5a33}}
+}
 /* Version PC : écran large, deux colonnes, raccourcis clavier */
 @media (min-width:960px){
  .app{max-width:76rem;padding-block:28px 48px}
@@ -108,6 +184,15 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
  .opt kbd{font:700 .75rem var(--font);border:1px solid var(--line);border-radius:5px;padding:1px 6px;margin-right:10px;color:var(--mut)}
  .keys{color:var(--mut);font-size:.8rem;text-align:center}
  .grid6{grid-template-columns:repeat(6,minmax(0,1fr))}
+ .app.m-lobby{max-width:64rem}
+ .hero{min-height:280px}.hero .scene{height:85%}.hero h1{font-size:2.2rem}.hero-emb svg{width:96px;height:96px}
+ .home{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .big-play{max-width:24rem;align-self:center;width:100%}
+ .tabbar{left:50%;right:auto;transform:translateX(-50%);bottom:16px;width:30rem;border:1px solid var(--line);border-radius:16px;padding:6px}
+ .app.m-jouer{max-width:76rem}
+ .m-jouer .lob{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-areas:"b c"}
+ .lob-b .modes{grid-template-columns:repeat(auto-fill,minmax(17rem,1fr))}
+ .jh{max-width:24rem}
  .app.m-profil{max-width:64rem}
  .album{grid-template-columns:repeat(auto-fill,minmax(10rem,1fr))}
 }
@@ -141,6 +226,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 <script src="js/banque-laniflex.js"></script>
 <script src="js/banque-cours.js"></script>
 <script src="js/recompenses.js"></script>
+<script src="js/ui.js"></script>
 <script>
 const TIERS=[{nom:'Fer',min:0,c1:'#9aa0ab',c2:'#4b4f57'},{nom:'Bronze',min:950,c1:'#f0a66a',c2:'#7a4420'},{nom:'Argent',min:1050,c1:'#e6edf6',c2:'#7d8a9c'},{nom:'Or',min:1150,c1:'#ffe27a',c2:'#b8841a'},{nom:'Platine',min:1250,c1:'#8ff0e0',c2:'#1f8f84'},{nom:'Diamant',min:1350,c1:'#a9c4ff',c2:'#3557d6'},{nom:'Maître',min:1450,c1:'#e3a6ff',c2:'#7a2fc0'},{nom:'Légende',min:1550,c1:'#ffb3c1',c2:'#d1203f'}];
 function rang(r){let i=TIERS.length-1;while(i>0&&r<TIERS[i].min)i--;if(i===TIERS.length-1)return{i,label:TIERS[i].nom,div:0};const bas=i===0?850:TIERS[i].min,w=(TIERS[i+1].min-bas)/3,div=Math.max(1,Math.min(3,Math.floor((r-bas)/w)+1));return{i,label:TIERS[i].nom+' '+['I','II','III'][div-1],div}}
@@ -194,7 +280,12 @@ function startMode(m){const st=elo(allAnswers());let pool=BANQUE.filter(q=>inMod
  const ar=arene(globalMmr(st));const dw=q=>ar.diff[q.d-1]+.3;
  const w=m.weak?q=>{const R=(st[q.n]||{R:1000}).R;return Math.max(.2,Math.pow(1.012,1150-R))*dw(q)}:dw;
  begin({kind:'mode',titre:m.nom,qs:pick(pool,m.n,w)})}
-function startBoss(b){const bm=q=>MODS[b.mod||'en'].test(q.n);let pool=BANQUE.filter(q=>bm(q)&&(!b.notions||b.notions.includes(q.n))&&q.d>=(b.dmin||2));if(pool.length<b.n)pool=BANQUE.filter(q=>bm(q)&&(!b.notions||b.notions.includes(q.n)));
+function startBoss(b){S.pendingBoss=b;S.screen='bossintro';render()}
+async function claimQuest(){const q=questDuJour();if(q.claimed||q.done<q.goal)return;const carte=tirerCarte(1,true,true,Date.now());
+ const doc={date:today(),at:new Date().toISOString(),mode:'quete',titre:'Quête : '+q.id,boss:null,victoire:null,combo:0,carte,reponses:[]};
+ S.m={kind:'quete',titre:'Quête du jour'};S.answers=[];S.carte=carte;S.carteNeuve=!collection().has(carte);S.chestOpen=false;S.succesNew=[];S.before=elo(allAnswers());S.showArena=false;S.saving='Sauvegarde…';S.screen='results';render();
+ try{await Data.saveSession(doc);await reload();S.saving='Coffre ajouté à ta collection ✓'}catch(e){Data.queue.add(doc);sessions.push(doc);S.saving='Pas de réseau : coffre gardé sur ce téléphone.'}render()}
+function launchBoss(b){const bm=q=>MODS[b.mod||'en'].test(q.n);let pool=BANQUE.filter(q=>bm(q)&&(!b.notions||b.notions.includes(q.n))&&q.d>=(b.dmin||2));if(pool.length<b.n)pool=BANQUE.filter(q=>bm(q)&&(!b.notions||b.notions.includes(q.n)));
  begin({kind:'boss',boss:b,titre:'Boss : '+b.nom,qs:pick(pool,Math.min(b.n,pool.length)),lives:b.lives})}
 function startNotion(id){MOD=modOf(id);begin({kind:'mode',titre:'Entraînement : '+NOTIONS_NOMS[id],qs:pick(BANQUE.filter(q=>q.n===id),10)})}
 function begin(m){Object.assign(S,{screen:'match',m,idx:0,answers:[],combo:0,best:0,lives:m.lives||0,answered:false,before:elo(allAnswers())});render()}
@@ -207,10 +298,12 @@ function answer(given){if(S.answered)return;const q=S.m.qs[S.idx];let ok;
  const cur=elo(allAnswers().concat(S.answers));const s=cur[q.n]||{R:1000,g:{}};const E=1/(1+Math.pow(10,(1000-s.R)/400));let g=40*((ok?1:0)-E);const d=(s.g||{})[today()]||0;if(g>0&&d>=100)g/=4;S.last.delta=Math.round(g);
  S.answers.push({date:today(),seance:S.m.titre,question:'Q'+(S.idx+1),notion:q.n,correct:ok,given:q.t==='mc'?q.o[given]||'(temps écoulé)':given,attendu:q.t==='mc'?q.o[q.a]:q.a[0]});
  if(ok){S.combo++;S.best=Math.max(S.best,S.combo)}else{S.combo=0;if(S.m.kind==='boss')S.lives--}
- render()}
+ render();floatText((S.last.delta>=0?'+':'')+S.last.delta+' pts',ok);if(ok){S.combo>=3&&S.combo%3===0?SFX.combo():SFX.good()}else SFX.bad()}
 function next(){S.idx++;S.answered=false;const boss=S.m.kind==='boss';if(S.idx>=S.m.qs.length||(boss&&S.lives<=0))return finish();render()}
-async function finish(){clearInterval(timerId);const boss=S.m.kind==='boss';const won=boss&&S.lives>0;S.won=won;S.screen='results';render();
- if(!S.answers.length)return;
+async function finish(){clearInterval(timerId);const boss=S.m.kind==='boss';const won=boss&&S.lives>0;S.won=won;S.chestOpen=false;S.carte=null;S.succesNew=[];S.saving='';
+ if(!S.answers.length){S.screen='jouer';render();return}
+ S.screen='results';const sc=S.answers.filter(a=>a.correct).length/S.answers.length;(boss?(won?SFX.win:SFX.lose):(sc>=.6?SFX.win:SFX.lose))();
+ S.showArena=arene(globalMmr(elo(allAnswers().concat(S.answers)))).n>arene(globalMmr(S.before)).n;render();
  S.succesAvant=succesOk();
  const score=S.answers.filter(a=>a.correct).length/S.answers.length;
  const carte=S.answers.length>=5?tirerCarte(score,boss,won,Date.now()):null;S.carte=carte;S.carteNeuve=carte&&!collection().has(carte);
@@ -235,20 +328,64 @@ function areneBanner(g){const a=arene(g),i=ARENES.indexOf(a),nx=ARENES[i+1];cons
  return `<div class="arena"><span class="deco" aria-hidden="true">${a.deco}</span><div><span class="label" style="color:${a.acc}">Arène ${a.n}</span><b>${esc(a.nom)}</b><div class="bar" style="margin-top:6px"><div style="width:${pct}%;background:${a.acc}"></div></div><small>${nx?(Math.ceil(nx.min-g)+' pts avant '+esc(nx.nom)):'Arène maximum atteinte'} · questions ${['plutôt faciles','équilibrées','plus dures','difficiles','très dures','de haut niveau','d\'expert','de légende'][i]}</small></div></div>`}
 
 // ---- screens
+// ---- données du jour : objectif, quête, courbe
+const OBJECTIF=20;
+function todayAnswers(){return allAnswers().filter(a=>a.date===today())}
+function questDuJour(){const st=elo(allAnswers());const ids=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id));
+ const started=ids.filter(id=>st[id]&&st[id].n>0).sort((a,b)=>st[a].R-st[b].R);
+ let h=0;for(const ch of today()+MOD)h=(h*31+ch.charCodeAt(0))>>>0;
+ const id=started.length?started[h%Math.min(3,started.length)]:ids[h%ids.length];
+ const done=todayAnswers().filter(a=>a.notion===id&&a.correct).length;
+ const claimed=sessions.some(s=>s.mode==='quete'&&s.date===today()&&s.titre===('Quête : '+id));
+ return {id,goal:6,done:Math.min(6,done),claimed}}
+function courbe7(){const all=allAnswers();const out=[];for(let k=6;k>=0;k--){const d=new Date();d.setDate(d.getDate()-k);const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');out.push({d:ds,v:globalMmr(elo(all.filter(a=>a.date<=ds))),n:all.filter(a=>a.date===ds).length})}return out}
+function sparkSvg(pts){const vs=pts.map(p=>p.v),lo=Math.min(...vs)-10,hi=Math.max(...vs)+10,W=300,H=70;const x=i=>10+i*(W-20)/(pts.length-1),y=v=>H-8-(v-lo)/(hi-lo||1)*(H-16);
+ const line=pts.map((p,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(p.v).toFixed(1)).join(' ');
+ const jours=['D','L','M','M','J','V','S'];
+ return `<svg viewBox="0 0 ${W} ${H+16}" width="100%" aria-label="Points sur 7 jours"><defs><linearGradient id="spk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--arena,#3d7bff)" stop-opacity=".35"/><stop offset="1" stop-color="var(--arena,#3d7bff)" stop-opacity="0"/></linearGradient></defs><path d="${line} L${x(pts.length-1)} ${H} L${x(0)} ${H} Z" fill="url(#spk)"/><path d="${line}" fill="none" stroke="var(--arena,#3d7bff)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${pts.map((p,i)=>`<circle cx="${x(i)}" cy="${y(p.v)}" r="${i===pts.length-1?4.5:p.n?3:2}" fill="${p.n?'var(--arena,#3d7bff)':'#4a5570'}"/><text x="${x(i)}" y="${H+13}" text-anchor="middle" font-size="10" fill="#8c98b3">${jours[new Date(p.d+'T12:00').getDay()]}</text>`).join('')}</svg>`}
+function ring(pct,label){const r=26,c=2*Math.PI*r;return `<svg viewBox="0 0 64 64" class="ring"><circle cx="32" cy="32" r="${r}" fill="none" stroke="#ffffff14" stroke-width="7"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="var(--gold)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(c*Math.min(1,pct)).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 32 32)"/><text x="32" y="37" text-anchor="middle" font-size="15" font-weight="800" fill="#e9eef8">${label}</text></svg>`}
+function hero(g,cl,k){const a=arene(g),i=ARENES.indexOf(a),nx=ARENES[i+1];const pct=nx?Math.max(3,Math.min(100,100*(g-a.min)/(nx.min-a.min))):100;
+ return `<section class="hero" style="--arena:${a.acc}"><div class="hero-sky"></div>${sceneFx(i)}${sceneSvg(i,a.acc)}
+ <div class="hero-top"><div class="hero-emb">${emb(g,cl)}</div><div class="who"><span class="label" style="color:${a.acc}">Arène ${a.n} · ${esc(a.nom)}</span><h1>${cl?k.label:'Placement'}</h1><small>« ${esc(titreActuel())} » · ${g} pts</small></div><button class="snd" data-act="son" aria-label="Activer ou couper le son">${SFX.muted?'🔇':'🔊'}</button></div>
+ <div class="hero-bot"><div class="bar"><div style="width:${pct}%;background:${a.acc}"></div></div><small>${nx?Math.ceil(nx.min-g)+' pts avant '+esc(nx.nom):'Arène maximum atteinte'}</small></div></section>`}
+
+// ---- écran Accueil
 function lobby(){const st=elo(allAnswers()),g=globalMmr(st),cl=Object.values(st).some(x=>x.n>=3),k=rang(g);
+ const s=stats(),q=questDuJour(),tA=todayAnswers().length;
+ const ids=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id)&&st[id]&&st[id].n>0).sort((a,b)=>st[a].R-st[b].R);const pire=ids[0];
+ const col=collection(),last=[...sessions].reverse().find(x=>x.carte);
+ return `${hero(g,cl,k)}
+ ${!ready?'<div class="card note">Connexion à ta progression…</div>':''}${saveErr?`<div class="card warn">${esc(saveErr)}</div>`:''}
+ <div class="home">
+ <div class="card daily"><div>${ring(tA/OBJECTIF,tA+'/'+OBJECTIF)}</div><div><span class="label">Objectif du jour</span><b>${tA>=OBJECTIF?'Objectif atteint ✓':'Encore '+(OBJECTIF-tA)+' questions'}</b><small>🔥 Série : <b>${s.serie} jour${s.serie>1?'s':''}</b> d'affilée</small></div></div>
+ <div class="card quest ${q.done>=q.goal?'ok':''}"><span class="label" style="color:var(--gold)">⚔️ Quête du jour · ${MODS[MOD].nom}</span><b>Réussis ${q.goal} questions : ${esc(NOTIONS_NOMS[q.id])}</b><div class="bar"><div style="width:${100*q.done/q.goal}%;background:var(--gold)"></div></div>
+  <div class="row2"><small>${q.done}/${q.goal} · récompense : un coffre (carte rare ou mieux)</small>${q.claimed?'<span class="tag">Coffre obtenu ✓</span>':q.done>=q.goal?'<button class="go mini" data-act="claim">🎁 Ouvrir le coffre</button>':`<button class="go mini" data-notion="${q.id}">Jouer</button>`}</div></div>
+ <div class="card"><div class="row2"><span class="label">Tes points · 7 jours</span><small>${s.questions} questions au total</small></div>${sparkSvg(courbe7())}</div>
+ ${pire?`<div class="card revenge"><span class="label" style="color:var(--loss)">💢 Revanche</span><div class="row2"><div class="rv">${emb(st[pire].R,st[pire].n>=3)}<div><b>${esc(NOTIONS_NOMS[pire])}</b><small>${st[pire].n>=3?rang(st[pire].R).label:'Placement'} · ta notion la plus faible</small></div></div><button class="go mini" data-notion="${pire}">Revanche</button></div></div>`:''}
+ <div class="card"><div class="row2"><span class="label">Collection</span><small>${col.size}/${CARTES.length} cartes</small></div><div class="bar" style="margin:8px 0 10px"><div style="width:${100*col.size/CARTES.length}%;background:#b05bff"></div></div>${last?carteHtml(last.carte,false):'<p class="note">Termine une session de 5 questions ou plus pour gagner ta première carte.</p>'}</div>
+ </div>
+ <button class="go big-play" data-act="jouer">⚔️ Jouer</button>`}
+
+// ---- écran Jouer
+function jouer(){const st=elo(allAnswers());
  const notions=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id)).map(id=>({id,R:(st[id]||{R:1000}).R,n:(st[id]||{n:0}).n}));
- return `<div class="lob"><div class="lob-a"><header class="top">${emb(g,cl)}<div class="who"><h1>Arène Icademie</h1><small>« ${esc(titreActuel())} » · ${sessions.length} session(s)</small></div><div class="mmr">${cl?k.label:'Placement'}<small>${g} pts</small></div></header>
- ${areneBanner(g)}
- <div class="seg" role="group" aria-label="Matière">${Object.entries(MODS).map(([k2,m])=>`<button data-mod="${k2}" aria-pressed="${k2===MOD}">${m.nom}</button>`).join('')}</div>
- <nav class="nav2"><button data-act="profil">📊 Mon profil</button><a href="progression.html">📈 Progression</a></nav>
- ${!ready?'<div class="card note">Connexion à ta progression…</div>':''}${saveErr?`<div class="card warn">${esc(saveErr)}</div>`:''}</div><div class="lob-b">
- <span class="label">Jouer</span>
+ return `<div class="jh"><span class="label">Matière</span><select class="modsel" id="modsel" aria-label="Matière">${Object.entries(MODS).map(([k2,m])=>`<option value="${k2}" ${k2===MOD?'selected':''}>${m.nom}</option>`).join('')}</select></div>
+ <div class="lob"><div class="lob-b"><span class="label">Modes</span>
  <div class="modes">${MODES.map(m=>`<button class="mode" data-mode="${m.id}"><span class="ic" style="background:${m.col}22;color:${m.col}">${m.ic}</span><span><b>${m.nom}</b><span>${m.sub}</span></span><span class="t">${m.t}</span></button>`).join('')}</div>
  <span class="label">Boss</span>
- <div class="modes">${BOSSES.filter(b=>(b.mod||'en')===MOD).map(b=>{const w=bossWins[b.id];return `<button class="mode boss${w?' done':''}" data-boss="${b.id}"><span class="ic">☠</span><span><b>${esc(b.nom)}</b><span>${esc(b.sub)} · ${b.n} questions · ${'♥'.repeat(b.lives)} · ${b.time}s par question</span></span><span class="t">${w?'Vaincu ×'+w:'≈ '+Math.round(b.n*b.time/60+2)+' min'}</span></button>`}).join('')}</div>
-</div><div class="lob-c"><span class="label">Entraînement ciblé · 10 questions</span>
+ <div class="bosses">${BOSSES.filter(b=>(b.mod||'en')===MOD).map(b=>{const w=bossWins[b.id],L=BOSS_LOOK[b.id]||{emoji:'☠',col:'#ff5a6e'};return `<button class="bossc${w?' done':''}" data-boss="${b.id}" style="--bc:${L.col}"><span class="portrait">${L.emoji}</span><b>${esc(b.nom)}</b><small>${b.n} questions · ${'♥'.repeat(b.lives)} · ${b.time}s</small><span class="t">${w?'👑 Vaincu ×'+w:'≈ '+Math.round(b.n*b.time/60+2)+' min'}</span></button>`}).join('')}</div></div>
+ <div class="lob-c"><span class="label">Entraînement ciblé · 10 questions</span>
  <div class="chips">${notions.map(x=>`<button class="chip" data-notion="${x.id}">${emb(x.R,x.n>=3)}${esc(NOTIONS_NOMS[x.id])}</button>`).join('')}</div>
- <p class="note">Les points suivent les mêmes règles que ton tableau de bord : 1000 au départ, +/− selon tes réponses, gains divisés par 4 au-delà de +100 par jour sur une notion.</p></div></div>`}
+ <p class="note">Plus ton arène est haute, plus les questions des modes sont difficiles.</p></div></div>`}
+
+// ---- intro de boss
+function bossIntro(){const b=S.pendingBoss,L=BOSS_LOOK[b.id]||{emoji:'☠',col:'#ff5a6e',line:''};
+ return `<div class="intro" style="--bc:${L.col}"><div class="portrait xl pop">${L.emoji}</div><span class="label" style="color:${L.col}">Boss</span><h2>${esc(b.nom)}</h2><p class="line">${esc(L.line)}</p>
+ <div class="rules"><span>${b.n} questions</span><span>${'♥'.repeat(b.lives)} vies</span><span>⏱ ${b.time} s</span></div>
+ <button class="go" data-act="fight">⚔️ Combattre</button><button class="quit" data-act="jouer">Fuir</button></div>`}
+
+function tabbar(){const t=[['lobby','🏠','Accueil'],['jouer','⚔️','Jouer'],['profil','🏆','Profil']];
+ return `<nav class="tabbar" aria-label="Navigation">${t.map(([s,i,l])=>`<button data-act="${s}" class="${S.screen===s?'on':''}"><span>${i}</span>${l}</button>`).join('')}<a href="progression.html"><span>📈</span>Progression</a></nav>`}
 
 function loginScreen(){return `<header class="top"><div class="who"><h1>Arène Icademie</h1><small>Connecte-toi pour retrouver tes rangs</small></div></header>
  <form class="card fill" id="loginf"><span class="label">Connexion par e-mail</span><input id="email" type="email" autocomplete="email" placeholder="ton.email@exemple.com" required aria-label="E-mail"><button class="go">Recevoir mon lien de connexion</button><p class="note" id="loginmsg">Tu reçois un lien par e-mail : clique dessus sur ce téléphone, et tu restes connecté.</p></form>`}
@@ -272,7 +409,7 @@ function profil(){const all=allAnswers(),st=elo(all),g=globalMmr(st),cl=Object.v
 
 function match(){const m=S.m,q=m.qs[S.idx],boss=m.kind==='boss';
  let head=`<div class="hud"><button class="quit" data-act="quit">✕ Abandon</button><div class="bar"><div style="width:${100*S.idx/m.qs.length}%"></div></div><span class="combo">${S.combo>=2?'🔥 ×'+S.combo:''}</span></div>`;
- if(boss){const hp=100*(1-S.answers.filter(a=>a.correct).length/m.qs.length);head+=`<div class="bossbar card"><div class="row"><span>☠ ${esc(m.boss.nom)}</span><span class="lives">${'♥'.repeat(Math.max(0,S.lives))}${'♡'.repeat(m.boss.lives-Math.max(0,S.lives))}</span></div><div class="hp"><div style="width:${hp}%"></div></div><div class="row note"><span>PV du boss</span><span class="timer" id="timer"></span></div></div>`}
+ if(boss){const hp=100*(1-S.answers.filter(a=>a.correct).length/m.qs.length);const L=BOSS_LOOK[m.boss.id]||{emoji:'☠',col:'#ff5a6e'};head+=`<div class="bossbar card" style="--bc:${L.col}"><div class="row"><span class="bname"><span class="portrait sm ${S.answered&&S.last.ok?'hit':''}">${L.emoji}</span>${esc(m.boss.nom)}</span><span class="lives">${'♥'.repeat(Math.max(0,S.lives))}${'♡'.repeat(m.boss.lives-Math.max(0,S.lives))}</span></div><div class="hp"><div style="width:${hp}%"></div></div><div class="row note"><span>PV du boss</span><span class="timer" id="timer"></span></div></div>`}
  let body=`<div class="meta"><span>Question ${S.idx+1}/${m.qs.length}</span><span>${esc(NOTIONS_NOMS[q.n])} · ${'★'.repeat(q.d)}</span></div><div class="q pop">${esc(q.q)}</div>`;
  if(q.t==='mc')body+=`<div class="opts">${q.o.map((o,i)=>{let c='';if(S.answered){if(i===q.a)c=' good';else if(i===S.last.given)c=' bad'}return `<button class="opt${c}" data-opt="${i}" ${S.answered?'disabled':''}><kbd>${i+1}</kbd>${esc(o)}</button>`}).join('')}</div>`;
  else body+=`<form class="fill" id="fillf"><input id="fillin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Écris ta réponse" ${S.answered?'disabled':''} value="${S.answered?esc(S.last.given):''}" aria-label="Ta réponse"><button class="go" ${S.answered?'hidden':''}>Valider</button></form>`;
@@ -281,20 +418,24 @@ function match(){const m=S.m,q=m.qs[S.idx],boss=m.kind==='boss';
  return head+body}
 
 function results(){const m=S.m,boss=m.kind==='boss',ok=S.answers.filter(a=>a.correct).length,tot=S.answers.length;
+ if(m.kind==='quete')return `<div class="card res-h"><span class="label" style="color:var(--gold)">⚔️ Quête du jour accomplie</span><span class="big">Bien joué !</span></div><div class="card" style="text-align:center"><span class="label">🎁 Coffre de quête</span>${S.chestOpen?carteHtml(S.carte,S.carteNeuve):`<button class="chest" data-act="chest"><span class="chest-ic">🎁</span><b>Touche pour ouvrir le coffre</b></button>`}</div><p class="save">${esc(S.saving||'')}</p><button class="go" data-act="lobby">Retour à l'accueil</button>`;
+ const ov=S.showArena?(()=>{const a=arene(globalMmr(elo(allAnswers().concat(S.answers)))),i=ARENES.indexOf(a);return `<div class="overlay" style="--arena:${a.acc}"><div class="ov-card pop"><div class="hero ov-hero"><div class="hero-sky"></div>${sceneFx(i)}${sceneSvg(i,a.acc)}</div><span class="label" style="color:${a.acc}">Nouvelle arène débloquée</span><h2>${a.deco} ${esc(a.nom)}</h2><p class="note">Les questions deviennent plus difficiles. Le décor de l'app change.</p><button class="go" data-act="closeov">Entrer dans l'arène</button></div></div>`})():'';
  const before=S.before,after=elo(allAnswers().concat(S.answers));const gB=globalMmr(before),gA=globalMmr(after);
  const touched=[...new Set(S.answers.map(a=>a.notion))].map(id=>({id,b:(before[id]||{R:1000,n:0}),a:after[id]}));
  const title=boss?(S.won?'VICTOIRE':'DÉFAITE'):'Session terminée';const clA=Object.values(after).some(x=>x.n>=3);
  return `<div class="card res-h">${emb(gA,clA)}<span class="label">${esc(m.titre)}</span><span class="big" style="color:${boss?(S.won?'var(--gold)':'var(--loss)'):'var(--fg)'}">${title}</span><span>${ok}/${tot} bonnes · meilleur combo ${S.best}</span><span class="pts ${gA-gB>=0?'up':'down'}">Rang global : ${gA-gB>=0?'+':''}${gA-gB} pts → ${clA?rang(gA).label:'Placement'}</span></div>
  <div class="card"><span class="label">Points par notion</span><div class="list">${touched.map(t=>{const d=Math.round(t.a.R-t.b.R),up=t.a.n>=3&&(t.b.n<3||rang(t.a.R).label!==rang(t.b.R).label)&&t.a.R>t.b.R;return `<div class="li">${emb(t.a.R,t.a.n>=3)}<div>${esc(NOTIONS_NOMS[t.id])}<small>${t.a.n>=3?rang(t.a.R).label:'Placement '+t.a.n+'/3'} · ${Math.round(t.a.R)} pts ${up?'<span class="rankup">▲ RANG SUPÉRIEUR</span>':''}</small></div><span class="pts ${d>=0?'up':'down'}">${d>=0?'+':''}${d}</span></div>`}).join('')}</div></div>
  ${S.answers.some(a=>!a.correct)?`<div class="card"><span class="label">Tes erreurs</span><div class="list">${S.answers.map((a,i)=>a.correct?'':`<div class="li" style="grid-template-columns:1fr"><div>${esc(m.qs[i].q)}<small>Toi : ${esc(a.given||'—')} · Réponse : ${esc(a.attendu)}</small><small>${esc(m.qs[i].x)}</small></div></div>`).join('')}</div></div>`:''}
- ${S.carte?`<div class="card" style="text-align:center"><span class="label">🎁 Butin de la session</span>${carteHtml(S.carte,S.carteNeuve)}</div>`:(tot&&tot<5?'<p class="note" style="text-align:center">Réponds à 5 questions ou plus pour gagner une carte.</p>':'')}
+ ${S.carte?`<div class="card" style="text-align:center"><span class="label">🎁 Butin de la session</span>${S.chestOpen?carteHtml(S.carte,S.carteNeuve):`<button class="chest" data-act="chest" aria-label="Ouvrir le coffre"><span class="chest-ic">🎁</span><b>Touche pour ouvrir le coffre</b></button>`}</div>`:(tot&&tot<5?'<p class="note" style="text-align:center">Réponds à 5 questions ou plus pour gagner une carte.</p>':'')}
  ${(S.succesNew||[]).map(id=>{const x=SUCCES.find(s=>s.id===id);return `<div class="card pop" style="border-color:var(--gold)"><span class="label" style="color:var(--gold)">🏆 Succès débloqué</span><b style="display:block">${esc(x.nom)}</b><span class="note">${esc(x.desc)} · nouveau titre : « ${esc(x.titre)} »</span></div>`}).join('')}
  ${(()=>{const a1=arene(gB),a2=arene(gA);return a2.n>a1.n?`<div class="card pop" style="border-color:${a2.acc};text-align:center"><span class="label" style="color:${a2.acc}">Nouvelle arène débloquée</span><div style="font-size:2.2rem">${a2.deco}</div><b>${esc(a2.nom)}</b><p class="note">Les questions deviennent plus difficiles.</p></div>`:''})()}
- <p class="save">${esc(S.saving||'')}</p><button class="go" data-act="lobby">Retour au lobby</button>`}
+ <p class="save">${esc(S.saving||'')}</p><button class="go" data-act="lobby">Retour à l'accueil</button>${ov}`}
 
 function render(){const app=document.getElementById('app');clearInterval(timerId);
  const ar=arene(globalMmr(elo(allAnswers())));document.body.style.background=ar.bg;document.body.style.backgroundAttachment='fixed';document.documentElement.style.setProperty('--arena',ar.acc);
- app.className='app m-'+S.screen;app.innerHTML=S.screen==='login'?loginScreen():S.screen==='lobby'?lobby():S.screen==='profil'?profil():S.screen==='match'?match():results();
+ const V={login:loginScreen,lobby,jouer,profil,bossintro:bossIntro,match,results};
+ app.className='app m-'+S.screen;app.innerHTML=(V[S.screen]||lobby)()+(['lobby','jouer','profil'].includes(S.screen)?tabbar():'');
+ const ms=document.getElementById('modsel');if(ms)ms.onchange=()=>{MOD=ms.value;try{localStorage.setItem('arene-mod',MOD)}catch(_){}render()};
  if(S.screen==='login'){document.getElementById('loginf').onsubmit=async e=>{e.preventDefault();const m=document.getElementById('loginmsg');try{await Data.login(document.getElementById('email').value.trim());m.textContent='Lien envoyé ✓ Ouvre ta boîte mail sur cet appareil.'}catch(err){m.textContent='Envoi impossible : '+(err.message||'réessaie dans une minute.')}}}
  if(S.screen==='match'){const f=document.getElementById('fillf');if(f){f.onsubmit=e=>{e.preventDefault();const v=document.getElementById('fillin').value;if(v.trim())answer(v)};if(!S.answered)document.getElementById('fillin').focus()}
   if(S.m.kind==='boss'&&!S.answered){let left=S.m.boss.time;const el=document.getElementById('timer');const tick=()=>{if(el){el.textContent='⏱ '+left+' s';el.classList.toggle('low',left<=8)}if(left--<=0){const q=S.m.qs[S.idx];answer(q.t==='mc'?-1:'')}};tick();timerId=setInterval(tick,1000)}}
@@ -308,6 +449,12 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
  else if(b.dataset.act==='quit'){if(S.answers.length)finish();else{S.screen='lobby';render()}}
  else if(b.dataset.act==='lobby'){S.screen='lobby';render()}
  else if(b.dataset.act==='profil'){S.screen='profil';render()}
+ else if(b.dataset.act==='jouer'){S.screen='jouer';render()}
+ else if(b.dataset.act==='son'){SFX.toggle();render()}
+ else if(b.dataset.act==='fight'){const bb=S.pendingBoss;S.pendingBoss=null;launchBoss(bb)}
+ else if(b.dataset.act==='claim')claimQuest()
+ else if(b.dataset.act==='chest'){S.chestOpen=true;SFX.chest();render()}
+ else if(b.dataset.act==='closeov'){S.showArena=false;render()}
  else if(b.dataset.titre){TITRE=b.dataset.titre;try{localStorage.setItem('arene-titre',TITRE)}catch(_){}Data.setTitre(TITRE).catch(()=>{});render()}
  else if(b.dataset.act==='logout'){Data.logout().then(()=>location.reload())}
  else if(b.dataset.mod){MOD=b.dataset.mod;try{localStorage.setItem('arene-mod',MOD)}catch(_){}render()}});
