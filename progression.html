@@ -250,8 +250,8 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
     <details>
       <summary>Comment les points sont calculés</summary>
       <dl>
-        <dt>Points (Elo)</dt><dd>Chaque notion démarre à 100 points (tu peux descendre jusqu'à 0) : plus tu es haut, moins une bonne réponse rapporte et plus une erreur coûte. Gain = 60 × (résultat − chance de réussite prévue).</dd>
-        <dt>Fatigue du jour</dt><dd>Sur une même notion, au-delà de +150 points dans la journée, les gains sont divisés par 4 : pour monter, il faut revenir d'autres jours.</dd>
+        <dt>Points (Elo)</dt><dd>Chaque notion démarre à 100 points (tu peux descendre jusqu'à 0) : plus tu es haut, moins une bonne réponse rapporte et plus une erreur coûte. Gain = 30 × (résultat − chance de réussite prévue).</dd>
+        <dt>Fatigue du jour</dt><dd>Sur une même notion, au-delà de +60 points dans la journée, les gains sont divisés par 4 : pour monter, il faut revenir d'autres jours.</dd>
         <dt>Placement</dt><dd>Une notion avec moins de 3 réponses est en placement et ne compte pas dans le rang global.</dd>
         <dt>Rang global</dt><dd>Moyenne des points des notions classées.</dd>
         <dt>Série</dt><dd>Jours consécutifs avec au moins une question, jusqu'à ta dernière séance.</dd>
@@ -285,7 +285,7 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
 <script>
   dash.calc('elo', {
     title: 'Points par notion',
-    description: 'Elo de chaque notion : départ 100, question à 100, K = 60, gains divisés par 4 au-delà de +150 par jour.',
+    description: 'Elo de chaque notion : départ 100, question à 100, K = 30, gains divisés par 4 au-delà de +60 par jour.',
     inputs: ['notions', 'reponses'],
     fn: (notions, reponses) => {
       const ok = (r) => r.correct === true || r.correct === 'true';
@@ -300,9 +300,9 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
         mine.forEach((r, j) => {
           if (avant7 === null && derniers.length && r.d >= derniers[0]) avant7 = R;
           const E = 1 / (1 + Math.pow(10, (100 - R) / 600));
-          let g = 60 * ((ok(r) ? 1 : 0) - E);
+          let g = 30 * ((ok(r) ? 1 : 0) - E);
           const deja = gainJour[r.d] || 0;
-          if (g > 0 && deja >= 150) g /= 4;
+          if (g > 0 && deja >= 60) g /= 4;
           gainJour[r.d] = deja + g; R = Math.max(0, R + g); if (j >= 2) pic = Math.max(pic, R);
           serie = ok(r) ? (serie > 0 ? serie + 1 : 1) : (serie < 0 ? serie - 1 : -1);
         });
@@ -324,8 +324,8 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
       tri.forEach((r, i) => {
         const s = st[r.notion] = st[r.notion] || { R: 100, n: 0, g: {} };
         const E = 1 / (1 + Math.pow(10, (100 - s.R) / 600));
-        let g = 60 * ((ok(r) ? 1 : 0) - E); const deja = s.g[r.d] || 0;
-        if (g > 0 && deja >= 150) g /= 4; s.g[r.d] = deja + g; s.R = Math.max(0, s.R + g); s.n += 1;
+        let g = 30 * ((ok(r) ? 1 : 0) - E); const deja = s.g[r.d] || 0;
+        if (g > 0 && deja >= 60) g /= 4; s.g[r.d] = deja + g; s.R = Math.max(0, s.R + g); s.n += 1;
         if (!tri[i + 1] || tri[i + 1].d !== r.d) {
           const cl = Object.values(st).filter((x) => x.n >= 3);
           out.push({ date: r.d, points: cl.length ? Math.round(cl.reduce((a, x) => a + x.R, 0) / cl.length) : 100, classees: cl.length, questions: tri.filter((x) => x.d === r.d).length });
@@ -379,8 +379,8 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
       tri.forEach((r) => {
         const n = st[r.notion] = st[r.notion] || { R: 100, g: {} };
         const E = 1 / (1 + Math.pow(10, (100 - n.R) / 600));
-        let g = 60 * ((ok(r) ? 1 : 0) - E); const deja = n.g[r.d] || 0;
-        if (g > 0 && deja >= 150) g /= 4; n.g[r.d] = deja + g; n.R = Math.max(0, n.R + g);
+        let g = 30 * ((ok(r) ? 1 : 0) - E); const deja = n.g[r.d] || 0;
+        if (g > 0 && deja >= 60) g /= 4; n.g[r.d] = deja + g; n.R = Math.max(0, n.R + g);
         const x = s[r.seance] = s[r.seance] || { date: r.d, seance: r.seance, questions: 0, bonnes: 0, delta: 0 };
         x.questions += 1; if (ok(r)) x.bonnes += 1; x.delta += g;
       });

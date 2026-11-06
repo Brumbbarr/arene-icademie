@@ -319,7 +319,7 @@ const strip=s=>norm(s).replace(/[.!?]+$/,'');
 
 // ---- Elo, same rules as the dashboard
 function elo(answers){const st={};const sorted=answers.map((r,k)=>({...r,k})).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.k-b.k);
- sorted.forEach(r=>{const s=st[r.notion]=st[r.notion]||{R:100,n:0,g:{}};const E=1/(1+Math.pow(10,(100-s.R)/600));let g=60*((r.correct?1:0)-E);const d=s.g[r.date]||0;if(g>0&&d>=150)g/=4;s.g[r.date]=d+g;s.R=Math.max(0,s.R+g);s.n++});return st}
+ sorted.forEach(r=>{const s=st[r.notion]=st[r.notion]||{R:100,n:0,g:{}};const E=1/(1+Math.pow(10,(100-s.R)/600));let g=30*((r.correct?1:0)-E);const d=s.g[r.date]||0;if(g>0&&d>=60)g/=4;s.g[r.date]=d+g;s.R=Math.max(0,s.R+g);s.n++});return st}
 function globalMmr(st){const cl=Object.values(st).filter(x=>x.n>=3);return cl.length?Math.round(cl.reduce((a,x)=>a+Math.round(x.R),0)/cl.length):100}
 
 // ---- state
@@ -370,7 +370,7 @@ let timerId=null;
 function answer(given){if(S.answered)return;const q=S.m.qs[S.idx];let ok;
  if(q.t==='mc')ok=given===q.a;else ok=q.a.some(a=>strip(a)===strip(given));
  S.answered=true;S.last={ok,given};clearInterval(timerId);
- const cur=elo(allAnswers().concat(S.answers));const s=cur[q.n]||{R:100,g:{}};const E=1/(1+Math.pow(10,(100-s.R)/600));let g=60*((ok?1:0)-E);const d=(s.g||{})[today()]||0;if(g>0&&d>=150)g/=4;g=Math.max(-s.R,g);S.last.delta=Math.round(g);
+ const cur=elo(allAnswers().concat(S.answers));const s=cur[q.n]||{R:100,g:{}};const E=1/(1+Math.pow(10,(100-s.R)/600));let g=30*((ok?1:0)-E);const d=(s.g||{})[today()]||0;if(g>0&&d>=60)g/=4;g=Math.max(-s.R,g);S.last.delta=Math.round(g);
  S.answers.push({date:today(),seance:S.m.titre,question:'Q'+(S.idx+1),notion:q.n,correct:ok,given:q.t==='mc'?q.o[given]||'(temps écoulé)':given,attendu:q.t==='mc'?q.o[q.a]:q.a[0]});
  if(ok){S.combo++;S.best=Math.max(S.best,S.combo)}else{S.combo=0;if(S.m.kind==='boss')S.lives--}
  render();floatText((S.last.delta>=0?'+':'')+S.last.delta+' pts',ok);if(ok){S.combo>=3&&S.combo%3===0?SFX.combo():SFX.good()}else SFX.bad()}
