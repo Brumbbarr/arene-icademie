@@ -2,6 +2,11 @@
 (function () {
   // ---------- Décors SVG des 8 arènes (paysage en bas de bannière)
   const SCENES = [
+    // 0 Plaine : collines, herbe, arbre, clôture, soleil
+    (c) => `<circle cx="345" cy="38" r="18" fill="#ffe27a" opacity=".9"/><path d="M0 150 Q80 90 170 140 T400 120 L400 200 L0 200 Z" fill="#2f6a2a"/><path d="M0 160 Q120 120 240 155 T400 150 L400 200 L0 200 Z" fill="#3f8a36"/>
+      <rect x="250" y="80" width="10" height="60" fill="#6a4420"/><circle cx="255" cy="72" r="28" fill="#2e7a2a"/><circle cx="238" cy="82" r="18" fill="#3a9a34"/><circle cx="272" cy="84" r="16" fill="#3a9a34"/>
+      <g stroke="#a07a4a" stroke-width="4">${[20,50,80,110,140].map((x)=>`<line x1="${x}" y1="128" x2="${x}" y2="158"/>`).join('')}<line x1="20" y1="136" x2="140" y2="136"/><line x1="20" y1="148" x2="140" y2="148"/></g>
+      ${[[40,175,'#ff8ab0'],[110,182,'#fff6c0'],[190,176,'#ff8ab0'],[320,180,'#a9c4ff']].map(([x,y,f])=>`<circle cx="${x}" cy="${y}" r="4" fill="${f}"/>`).join('')}`,
     // 1 Quai de chargement : quai, caisses, camion
     (c) => `<rect x="0" y="150" width="400" height="50" fill="#1b1e25"/><rect x="0" y="140" width="400" height="12" fill="#2b2f38"/>
       <g fill="#8a5a2b" stroke="#5a3a1a" stroke-width="2"><rect x="40" y="100" width="40" height="40"/><rect x="82" y="110" width="30" height="30"/><rect x="58" y="70" width="30" height="30"/></g>
@@ -27,10 +32,10 @@
     // 8 Panthéon : colonnes et couronne
     (c) => `<rect x="0" y="150" width="400" height="50" fill="#16050a"/><path d="M60 50 L200 10 L340 50 Z" fill="#4a1a24" stroke="${c}" stroke-opacity=".5"/><rect x="60" y="50" width="280" height="10" fill="#5a2230"/>${[80, 130, 180, 230, 280, 320].map((x) => `<rect x="${x}" y="60" width="16" height="90" fill="#5a2230" stroke="${c}" stroke-opacity=".25"/>`).join('')}<text x="200" y="42" text-anchor="middle" font-size="20">👑</text>`
   ];
-  window.sceneSvg = (i, color) => `<svg class="scene" viewBox="0 0 400 200" preserveAspectRatio="xMidYMax meet" aria-hidden="true">${SCENES[Math.max(0, Math.min(7, i))](color)}</svg>`;
+  window.sceneSvg = (i, color) => `<svg class="scene" viewBox="0 0 400 200" preserveAspectRatio="xMidYMax meet" aria-hidden="true">${SCENES[Math.max(0, Math.min(8, i))](color)}</svg>`;
   // Effet animé par arène : flocons (3), étincelles (4), fenêtres qui clignotent (6), poussière d'or (8)
   window.sceneFx = (i) => {
-    const kind = { 2: 'snow', 3: 'spark', 5: 'spark', 6: 'snow', 7: 'gold' }[i];
+    const kind = { 0: 'spark', 3: 'snow', 4: 'spark', 6: 'spark', 7: 'snow', 8: 'gold' }[i];
     if (!kind) return '';
     return `<div class="fx fx-${kind}" aria-hidden="true">${Array.from({ length: 18 }, (_, k) => `<i style="left:${(k * 53) % 100}%;animation-delay:${(k * 0.37) % 4}s;animation-duration:${4 + (k % 5)}s"></i>`).join('')}</div>`;
   };

@@ -2,17 +2,14 @@
 <html lang="fr"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Progression · Arène Icademie</title>
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0a0f1c"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&display=swap"><link rel="icon" href="icon-192.png" sizes="192x192"><link rel="apple-touch-icon" href="app-icon-v5-192.png">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0a0f1c"><link rel="icon" href="icon-192.png" sizes="192x192"><link rel="apple-touch-icon" href="app-icon-v5-192.png">
 <style>
 :root{color-scheme:dark;--font-anthropic-sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-anthropic-serif:Georgia,serif;
 --cds-font-size-caption:.8rem;--cds-font-size-body:.95rem;--cds-font-size-heading:1.05rem;--cds-font-size-title:1.9rem;--cds-font-weight-medium:600;
 --cds-gap-xs:.35rem;--cds-gap-sm:.6rem;--cds-gap-md:1rem;--cds-gap-lg:1.4rem;--cds-gap-xl:2rem;--cds-pad-xs:.35rem;--cds-pad-sm:.6rem;--cds-pad-md:.9rem;--cds-pad-lg:1.2rem;--cds-pad-xl:2rem;
 --cds-radius:8px;--cds-dur-slow:.4s;--cds-ease-out:cubic-bezier(.2,.8,.2,1);--color-fg:#e9eef8;--color-bg:#0a0f1c;--color-panel:#121a2c;--color-border-line:#223050;--color-fg-muted:#8c98b3}
 html,body{margin:0;background:#0a0f1c;color:#e9eef8}
-.px{image-rendering:pixelated;display:block;width:100%;height:100%}
-.tk h1,.tk h2,.tk-label,.tk-big,.tk-rankname,.tk-row-r .pts,.tk-stat .v,.tk-nav a,.tk-tools button{font-family:"Pixelify Sans",system-ui,sans-serif!important;letter-spacing:.02em}
-.tk-card{border-radius:0!important;box-shadow:0 0 0 2px #0a0f1c,0 0 0 4px #2a3a60,6px 6px 0 4px #00000060}
-.tk-card-h{border-radius:0}
+.tk svg{display:block}
 .px-glow{filter:drop-shadow(0 0 4px var(--pg))}
 @media (prefers-reduced-motion:no-preference){.px-sparkle rect{animation:pxblink 1.4s steps(2) infinite}.px-flame.f2{animation:pxflip .5s steps(1) infinite}.px-flame.f1{animation:pxflip .5s steps(1) infinite reverse}@keyframes pxblink{50%{opacity:0}}@keyframes pxflip{50%{opacity:0}}}.shim-msg{max-width:30rem;margin:3rem auto;padding:1.2rem;border:1px solid #223050;border-radius:10px;background:#121a2c;font-family:system-ui,sans-serif;text-align:center}
 .shim-msg a{color:#8fb0ff}
@@ -21,7 +18,7 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/data.js"></script>
-<script src="js/pixel.js"></script>
+<script src="js/emblem.js"></script>
 <script>
 // Petit remplaçant de l'API "dash" du tableau de bord Claude : mêmes appels, données venant de Supabase.
 (function(){
@@ -395,7 +392,7 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
   const frDate = (d) => { const [y, m, j] = String(d).slice(0, 10).split('-'); return j + '/' + m + '/' + y; };
   const T = () => window.RK_TIERS;
   let uid = 0;
-  const embleme = (points, classee) => { const k = window.rkRang(points); return pxEmblem(classee ? k.i : -1, classee ? k.div : 0); };
+  const embleme = (points, classee) => { const k = window.rkRang(points); return emblemSvg(classee ? k.i : -1, classee ? k.div : 0); };
   const chip = (serie) => { const s = document.createElement('span'); if (!serie) return s; s.className = 'tk-chip ' + (serie > 0 ? 'w' : 'l'); s.textContent = (serie > 0 ? 'Série V ' : 'Série D ') + Math.abs(serie); return s; };
   window.rkTri = 'points'; window.rkModule = '';
   const ARENE = 'index.html';
