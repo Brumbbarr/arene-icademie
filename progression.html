@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Progression · Arène Icademie</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0a0f1c"><link rel="icon" href="icon.svg">
+<style>
+:root{color-scheme:dark;--font-anthropic-sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-anthropic-serif:Georgia,serif;
+--cds-font-size-caption:.8rem;--cds-font-size-body:.95rem;--cds-font-size-heading:1.05rem;--cds-font-size-title:1.9rem;--cds-font-weight-medium:600;
+--cds-gap-xs:.35rem;--cds-gap-sm:.6rem;--cds-gap-md:1rem;--cds-gap-lg:1.4rem;--cds-gap-xl:2rem;--cds-pad-xs:.35rem;--cds-pad-sm:.6rem;--cds-pad-md:.9rem;--cds-pad-lg:1.2rem;--cds-pad-xl:2rem;
+--cds-radius:8px;--cds-dur-slow:.4s;--cds-ease-out:cubic-bezier(.2,.8,.2,1);--color-fg:#e9eef8;--color-bg:#0a0f1c;--color-panel:#121a2c;--color-border-line:#223050;--color-fg-muted:#8c98b3}
+html,body{margin:0;background:#0a0f1c;color:#e9eef8}
+.shim-msg{max-width:30rem;margin:3rem auto;padding:1.2rem;border:1px solid #223050;border-radius:10px;background:#121a2c;font-family:system-ui,sans-serif;text-align:center}
+.shim-msg a{color:#8fb0ff}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script>
+// Petit remplaçant de l'API "dash" du tableau de bord Claude : mêmes appels, données venant de Supabase.
+(function(){
+  const calcs=[],draws={},store={};
+  window.dash={
+    colors:['#3d7bff','#7a5cff','#34d27b','#ffcf5a','#ff5a6e','#8ff0e0','#e3a6ff','#f0a66a'],
+    calc(id,o){calcs.push({id,...o})},
+    draw(name,fn){if(fn)draws[name]=fn;else runDraw(name)},
+    data(id){return store[id]||{status:'loading',data:[]}},
+    onData(fn){fn()}
+  };
+  function runDraw(name){const fn=draws[name];if(!fn)return;document.querySelectorAll('[data-draw="'+name+'"]').forEach(el=>{try{el.textContent='';fn(el)}catch(e){console.error(name,e)}})}
+  window.shimRun=function(notions,reponses){
+    store.notions={status:'ok',data:notions};store.reponses={status:'ok',data:reponses};
+    calcs.forEach(c=>{try{store[c.id]={status:'ok',data:c.fn(...c.inputs.map(i=>store[i].data))}}catch(e){console.error(c.id,e);store[c.id]={status:'error',data:[]}}});
+    Object.keys(draws).forEach(runDraw);
+  };
+  let w=innerWidth;addEventListener('resize',()=>{if(Math.abs(innerWidth-w)>40){w=innerWidth;Object.keys(draws).forEach(runDraw)}});
+})();
+</script>
+</head><body>
+<div id="dash-root">
+
+<style>
+  #dash-root { --dash-gutter: 0; }
+  .tk { --bg: #0a0f1c; --panel: #121a2c; --panel2: #18223a; --line: #223050; --fg: #e9eef8; --mut: #8c98b3; --acc: #3d7bff; --acc2: #7a5cff; --win: #34d27b; --loss: #ff5a6e;
+    background: var(--bg); color: var(--fg); font-family: var(--font-anthropic-sans); min-height: 100%; padding-bottom: var(--cds-pad-xl); }
+  .tk b { font-weight: 700; }
+  .tk-wrap { max-width: 76rem; margin-inline: auto; padding-inline: max(16px, 2vw); display: flex; flex-direction: column; gap: var(--cds-gap-md); }
+  .tk-banner { background: radial-gradient(120% 140% at 0% 0%, #2a3f8f 0%, #16204a 45%, var(--bg) 100%); border-bottom: 1px solid var(--line); }
+  .tk-banner .tk-wrap { padding-block: var(--cds-pad-xl) 0; gap: var(--cds-gap-sm); }
+  .tk-id { display: flex; align-items: center; gap: var(--cds-gap-md); flex-wrap: wrap; }
+  .tk-ava { width: 4.5rem; height: 4.5rem; border-radius: 50%; display: grid; place-items: center; font-size: 1.9rem; font-weight: 800; background: linear-gradient(135deg, var(--acc), var(--acc2)); box-shadow: 0 0 0 3px #ffffff22, 0 8px 24px #3d7bff55; }
+  .tk-id h1 { margin: 0; font-size: 1.9rem; font-weight: 800; letter-spacing: -.01em; }
+  .tk-id p { margin: .15rem 0 0; color: var(--mut); font-size: var(--cds-font-size-caption); }
+  .tk-badge { margin-left: auto; display: flex; align-items: center; gap: var(--cds-gap-sm); background: #0007; border: 1px solid var(--line); border-radius: 999px; padding: .3rem .9rem .3rem .4rem; }
+  .tk-badge svg { width: 2.2rem; height: 2.2rem; display: block; }
+  .tk-badge small { display: block; color: var(--mut); font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; }
+  .tk-badge span { font-weight: 700; }
+  .tk-nav { display: flex; gap: var(--cds-gap-lg); overflow-x: auto; margin-top: var(--cds-gap-sm); }
+  .tk-nav a { color: var(--mut); text-decoration: none; font-weight: 600; font-size: var(--cds-font-size-body); padding: .7rem 0; border-bottom: 3px solid transparent; white-space: nowrap; }
+  .tk-nav a:first-child { color: var(--fg); border-color: var(--acc); }
+  .tk-nav a:hover, .tk-nav a:focus-visible { color: var(--fg); }
+  .tk-nav a.tk-play { margin-left: auto; color: #fff; }
+  .tk-train { display: inline-block; margin-top: .3rem; font-size: .72rem; font-weight: 800; color: #fff; text-decoration: none; background: linear-gradient(135deg, var(--acc), var(--acc2)); border-radius: 5px; padding: .15rem .5rem; white-space: nowrap; }
+  .tk-train:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .tk-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 22rem); gap: var(--cds-gap-md); align-items: start; padding-top: var(--cds-pad-lg); }
+  @media (max-width: 56rem) { .tk-main { grid-template-columns: minmax(0, 1fr); } }
+  .tk-col { display: flex; flex-direction: column; gap: var(--cds-gap-md); min-width: 0; }
+  .tk-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; }
+  .tk-card-h { display: flex; justify-content: space-between; align-items: center; gap: var(--cds-gap-sm); padding: .8rem 1rem; border-bottom: 1px solid var(--line); background: var(--panel2); }
+  .tk-card-h h2 { margin: 0; font-size: .82rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; }
+  .tk-card-h span { color: var(--mut); font-size: var(--cds-font-size-caption); }
+  .tk-card-b { padding: 1rem; }
+  .tk-label { color: var(--mut); font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; }
+  .tk-peak { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 1rem; align-items: center; }
+  .tk-peak svg { width: 6.5rem; height: 6.5rem; display: block; }
+  .tk-big { font-size: 2.4rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.05; }
+  .tk-rankname { font-size: 1.15rem; font-weight: 700; }
+  .tk-xp { height: .45rem; border-radius: 999px; background: #ffffff14; overflow: hidden; margin-top: .55rem; }
+  .tk-xp div { height: 100%; border-radius: 999px; }
+  .tk-sub { color: var(--mut); font-size: var(--cds-font-size-caption); margin-top: .35rem; }
+  .tk-split { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1px; background: var(--line); }
+  .tk-split > div { background: var(--panel); padding: 1rem; display: flex; flex-direction: column; gap: .25rem; }
+  .tk-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr)); gap: 1px; background: var(--line); }
+  .tk-stat { background: var(--panel); padding: .85rem 1rem; display: flex; flex-direction: column; gap: .2rem; }
+  .tk-stat .v { font-size: 1.45rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .tk-stat .n { color: var(--mut); font-size: .72rem; }
+  .tk-rows { display: flex; flex-direction: column; min-height: 6rem; }
+  .tk-row { display: grid; grid-template-columns: 3rem minmax(0, 1fr) auto; gap: .8rem; align-items: center; padding: .65rem 1rem; border-bottom: 1px solid var(--line); }
+  .tk-row:last-child { border-bottom: 0; }
+  .tk-row:hover { background: #ffffff06; }
+  .tk-row svg { width: 3rem; height: 3rem; display: block; }
+  .tk-row-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tk-row-sub { color: var(--mut); font-size: .76rem; }
+  .tk-row-r { text-align: right; }
+  .tk-row-r .pts { font-weight: 800; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+  .tk-chip { display: inline-block; font-size: .7rem; font-weight: 700; padding: .05rem .45rem; border-radius: 4px; margin-left: .3rem; }
+  .tk-chip.w { color: var(--win); background: #34d27b1f; } .tk-chip.l { color: var(--loss); background: #ff5a6e1f; } .tk-chip.n { color: var(--mut); background: #ffffff10; }
+  .tk-tools { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+  .tk-tools button { font: inherit; font-size: .76rem; font-weight: 700; padding: .3rem .7rem; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: var(--mut); cursor: pointer; }
+  .tk-tools button[aria-pressed="true"] { background: var(--acc); color: #fff; border-color: var(--acc); }
+  .tk-tools button:focus-visible, .tk-tools select:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .tk .dash-select { background-color: var(--bg); color: var(--fg); border-color: var(--line); }
+  .tk-chart { position: relative; min-height: 13rem; }
+  .tk-tip { position: absolute; pointer-events: none; background: #0b1120; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 8px 24px #0008; padding: .35rem .6rem; font-size: .76rem; white-space: nowrap; color: var(--fg); }
+  .tk-tip span { color: var(--mut); }
+  .tk-sess { display: flex; flex-direction: column; min-height: 6rem; }
+  .tk-sess-h { padding: .55rem 1rem; background: var(--panel2); border-block: 1px solid var(--line); display: flex; justify-content: space-between; font-size: .76rem; }
+  .tk-sess-h b { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; }
+  .tk-sess-h span { color: var(--mut); }
+  .tk-match { display: grid; grid-template-columns: .3rem minmax(0, 1fr) auto; gap: .75rem; align-items: center; padding: .6rem 1rem .6rem 0; border-bottom: 1px solid var(--line); }
+  .tk-match i { align-self: stretch; border-radius: 0 3px 3px 0; }
+  .tk-match-name { font-weight: 700; font-size: .88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tk-match-sub { color: var(--mut); font-size: .74rem; }
+  .tk-match-r { text-align: right; font-variant-numeric: tabular-nums; font-weight: 800; }
+  .tk-ladder { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 6.5rem), 1fr)); gap: .5rem; }
+  .tk-step { display: flex; flex-direction: column; align-items: center; gap: .15rem; text-align: center; font-size: .74rem; padding: .5rem .25rem; border-radius: 8px; border: 1px solid transparent; }
+  .tk-step svg { width: 3.2rem; height: 3.2rem; }
+  .tk-step.on { border-color: var(--acc); background: #3d7bff14; }
+  .tk-step span { color: var(--mut); font-variant-numeric: tabular-nums; }
+  .tk details { color: var(--mut); font-size: .8rem; }
+  .tk details summary { cursor: pointer; color: var(--fg); font-weight: 700; }
+  .tk details dl { display: grid; grid-template-columns: minmax(0, 9rem) 1fr; gap: .4rem 1rem; margin: .7rem 0 0; }
+  .tk details dt { color: var(--fg); }
+  .tk details dd { margin: 0; }
+  .tk [data-dash-source-state=empty] { color: transparent; }
+  .tk [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+  @media (prefers-reduced-motion: no-preference) {
+    .tk-glow { animation: tk-pulse 3.2s var(--cds-ease-out) infinite alternate; }
+    @keyframes tk-pulse { from { opacity: .3; } to { opacity: .75; } }
+  }
+</style>
+
+<div class="tk">
+  <header class="tk-banner" id="haut">
+    <div class="tk-wrap">
+      <div class="tk-id">
+        <div class="tk-ava" aria-hidden="true">T</div>
+        <div>
+          <h1>Tom</h1>
+          <p>Bachelor Chargé de développement commercial · Icademie · dernière séance le <span data-draw="derniere" data-source="global" data-field="derniere">—</span></p>
+        </div>
+        <div class="tk-badge" aria-label="Rang global">
+          <div data-draw="badge-emb" data-source="global"></div>
+          <div><small>Rang global</small><span data-draw="badge-rang" data-source="global" data-field="rang">—</span></div>
+        </div>
+      </div>
+      <nav class="tk-nav" aria-label="Sections">
+        <a href="#apercu">Aperçu</a>
+        <a href="#notions">Notions</a>
+        <a href="#sessions">Sessions</a>
+        <a href="#paliers">Rangs</a>
+        <a href="index.html" class="tk-play">▶ Jouer dans l'Arène</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="tk-wrap">
+    <div class="tk-main" id="apercu">
+      <div class="tk-col">
+        <section class="tk-card" aria-label="Rang global">
+          <div class="tk-split">
+            <div>
+              <span class="tk-label">Rang actuel</span>
+              <div class="tk-peak">
+                <div data-draw="cur-emb" data-source="global"></div>
+                <div>
+                  <div class="tk-rankname" data-draw="cur-rang" data-source="global" data-field="rang">—</div>
+                  <div class="tk-big" data-draw="cur-mmr" data-source="global" data-field="mmr">—</div>
+                  <div class="tk-xp" data-draw="cur-xp" data-source="global"></div>
+                  <div class="tk-sub" data-draw="cur-next" data-source="global">—</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <span class="tk-label">Meilleur rang atteint</span>
+              <div class="tk-peak">
+                <div data-draw="pic-emb" data-source="global"></div>
+                <div>
+                  <div class="tk-rankname" data-draw="pic-rang" data-source="global" data-field="picRang">—</div>
+                  <div class="tk-big" data-draw="pic-mmr" data-source="global" data-field="pic">—</div>
+                  <div class="tk-sub">ton record de points globaux</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tk-card" aria-label="Statistiques">
+          <div class="tk-card-h"><h2>Carrière</h2><span>tous modules</span></div>
+          <div class="tk-stats">
+            <div class="tk-stat"><span class="tk-label">Questions</span><span class="v" data-draw="s-q" data-source="global" data-field="questions">—</span><span class="n">répondues</span></div>
+            <div class="tk-stat"><span class="tk-label">Victoires</span><span class="v" data-draw="s-w" data-source="global" data-field="bonnes">—</span><span class="n">bonnes réponses</span></div>
+            <div class="tk-stat"><span class="tk-label">Win rate</span><span class="v" data-draw="s-taux" data-source="global" data-field="taux">—</span><span class="n" data-draw="s-taux7" data-source="global" data-field="taux7">—</span></div>
+            <div class="tk-stat"><span class="tk-label">Meilleur combo</span><span class="v" data-draw="s-combo" data-source="global" data-field="combo">—</span><span class="n">bonnes d'affilée</span></div>
+            <div class="tk-stat"><span class="tk-label">Jours joués</span><span class="v" data-draw="s-jours" data-source="global" data-field="jours">—</span><span class="n">avec au moins une question</span></div>
+            <div class="tk-stat"><span class="tk-label">Série</span><span class="v" data-draw="s-serie" data-source="global" data-field="serie">—</span><span class="n">jours d'affilée</span></div>
+            <div class="tk-stat"><span class="tk-label">Notions classées</span><span class="v" data-draw="s-cl" data-source="global" data-field="classees">—</span><span class="n" data-draw="s-tot" data-source="global" data-field="total">—</span></div>
+            <div class="tk-stat"><span class="tk-label">Plan couvert</span><span class="v" data-draw="s-couv" data-source="global" data-field="couverture">—</span><span class="n">notions découvertes</span></div>
+          </div>
+        </section>
+
+        <section class="tk-card" aria-label="Modules">
+          <div class="tk-card-h"><h2>Modules</h2><span>rang moyen des notions classées</span></div>
+          <div class="tk-rows" data-draw="modules" data-source="modules"></div>
+        </section>
+
+        <section class="tk-card" id="courbe" aria-label="Évolution du rang">
+          <div class="tk-card-h"><h2>Évolution du rang</h2><span>points globaux en fin de journée</span></div>
+          <div class="tk-card-b"><div class="tk-chart" data-draw="courbe" data-source="historique"></div></div>
+        </section>
+
+        <section class="tk-card" id="notions" aria-label="Notions">
+          <div class="tk-card-h"><h2>Notions</h2><span>3 réponses pour sortir du placement</span></div>
+          <div class="tk-card-b tk-tools">
+            <select class="dash-select" aria-label="Module" data-draw="filtre-module" data-source="elo"></select>
+            <div role="group" aria-label="Trier">
+              <button type="button" data-tri="points" aria-pressed="true">Points</button>
+              <button type="button" data-tri="plan" aria-pressed="false">Plan</button>
+              <button type="button" data-tri="recent" aria-pressed="false">7 derniers jours</button>
+              <button type="button" data-tri="grind" aria-pressed="false">À grinder</button>
+            </div>
+          </div>
+          <div class="tk-rows" data-draw="toutes" data-source="elo"></div>
+        </section>
+      </div>
+
+      <aside class="tk-col">
+        <section class="tk-card" aria-label="Forme">
+          <div class="tk-card-h"><h2>Forme</h2><span>les 10 dernières réponses</span></div>
+          <div class="tk-card-b"><div data-draw="forme" data-source="reponses" style="display:flex;gap:.3rem;min-height:1.6rem"></div></div>
+        </section>
+        <section class="tk-card" id="sessions" aria-label="Sessions">
+          <div class="tk-card-h"><h2>Sessions récentes</h2><span>points gagnés ou perdus</span></div>
+          <div class="tk-sess" data-draw="sessions" data-source="seances"></div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="tk-card" id="paliers" aria-label="Les rangs">
+      <div class="tk-card-h"><h2>Les rangs</h2><span>divisions I, II, III · départ à 1000 points</span></div>
+      <div class="tk-card-b"><div class="tk-ladder" data-draw="paliers" data-source="global"></div></div>
+    </section>
+
+    <details>
+      <summary>Comment les points sont calculés</summary>
+      <dl>
+        <dt>Points (Elo)</dt><dd>Chaque notion démarre à 1000 points et chaque question vaut 1000 : plus tu es haut, moins une bonne réponse rapporte et plus une erreur coûte. Gain = 40 × (résultat − chance de réussite prévue).</dd>
+        <dt>Fatigue du jour</dt><dd>Sur une même notion, au-delà de +100 points dans la journée, les gains sont divisés par 4 : pour monter, il faut revenir d'autres jours.</dd>
+        <dt>Placement</dt><dd>Une notion avec moins de 3 réponses est en placement et ne compte pas dans le rang global.</dd>
+        <dt>Rang global</dt><dd>Moyenne des points des notions classées.</dd>
+        <dt>Série</dt><dd>Jours consécutifs avec au moins une question, jusqu'à ta dernière séance.</dd>
+      </dl>
+    </details>
+  </div>
+</div>
+
+<script>
+  window.RK_TIERS = [
+    { nom: 'Fer', min: 0, c1: '#9aa0ab', c2: '#4b4f57' },
+    { nom: 'Bronze', min: 950, c1: '#f0a66a', c2: '#7a4420' },
+    { nom: 'Argent', min: 1050, c1: '#e6edf6', c2: '#7d8a9c' },
+    { nom: 'Or', min: 1150, c1: '#ffe27a', c2: '#b8841a' },
+    { nom: 'Platine', min: 1250, c1: '#8ff0e0', c2: '#1f8f84' },
+    { nom: 'Diamant', min: 1350, c1: '#a9c4ff', c2: '#3557d6' },
+    { nom: 'Maître', min: 1450, c1: '#e3a6ff', c2: '#7a2fc0' },
+    { nom: 'Légende', min: 1550, c1: '#ffb3c1', c2: '#d1203f' }
+  ];
+  window.rkRang = (r) => {
+    const T = window.RK_TIERS;
+    let i = T.length - 1; while (i > 0 && r < T[i].min) i -= 1;
+    const t = T[i];
+    if (i === T.length - 1) return { i, nom: t.nom, div: 0, label: t.nom, bas: t.min, haut: null };
+    const bas = i === 0 ? 850 : t.min; const haut = T[i + 1].min; const w = (haut - bas) / 3;
+    const div = Math.max(1, Math.min(3, Math.floor((r - bas) / w) + 1));
+    return { i, nom: t.nom, div, label: t.nom + ' ' + ['I', 'II', 'III'][div - 1], bas: bas + (div - 1) * w, haut: div === 3 ? haut : bas + div * w };
+  };
+</script>
+
+<script>
+  dash.calc('elo', {
+    title: 'Points par notion',
+    description: 'Elo de chaque notion : départ 1000, question à 1000, K = 40, gains divisés par 4 au-delà de +100 par jour.',
+    inputs: ['notions', 'reponses'],
+    fn: (notions, reponses) => {
+      const ok = (r) => r.correct === true || r.correct === 'true';
+      const T = [0, 950, 1050, 1150, 1250, 1350, 1450, 1550];
+      const noms = ['Fer', 'Bronze', 'Argent', 'Or', 'Platine', 'Diamant', 'Maître', 'Légende'];
+      const rang = (r) => { let i = 7; while (i > 0 && r < T[i]) i -= 1; if (i === 7) return noms[7]; const bas = i === 0 ? 850 : T[i]; const d = Math.max(1, Math.min(3, Math.floor((r - bas) / ((T[i + 1] - bas) / 3)) + 1)); return noms[i] + ' ' + ['I', 'II', 'III'][d - 1]; };
+      const tri = reponses.map((r, k) => ({ ...r, k, d: String(r.date).slice(0, 10) })).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : a.k - b.k));
+      const derniers = [...new Set(tri.map((r) => r.d))].slice(-7);
+      return notions.map((n, ordre) => {
+        let R = 1000, pic = 1000, gainJour = {}, avant7 = null, serie = 0;
+        const mine = tri.filter((r) => r.notion === n.id);
+        mine.forEach((r, j) => {
+          if (avant7 === null && derniers.length && r.d >= derniers[0]) avant7 = R;
+          const E = 1 / (1 + Math.pow(10, (1000 - R) / 400));
+          let g = 40 * ((ok(r) ? 1 : 0) - E);
+          const deja = gainJour[r.d] || 0;
+          if (g > 0 && deja >= 100) g /= 4;
+          gainJour[r.d] = deja + g; R += g; if (j >= 2) pic = Math.max(pic, R);
+          serie = ok(r) ? (serie > 0 ? serie + 1 : 1) : (serie < 0 ? serie - 1 : -1);
+        });
+        const bonnes = mine.filter(ok).length;
+        const classee = mine.length >= 3;
+        return { id: n.id, notion: n.notion, module: n.module, etape: Number(n.etape), ordre, reponses: mine.length, bonnes, taux: mine.length ? bonnes / mine.length : 0, points: Math.round(R), pic: Math.round(pic), delta7: Math.round(R - (avant7 === null ? R : avant7)), serie, classee, rang: !mine.length ? 'Non classée' : classee ? rang(R) : 'Placement ' + mine.length + '/3' };
+      });
+    }
+  });
+
+  dash.calc('historique', {
+    title: 'Points globaux par jour',
+    description: 'Moyenne des points des notions classées à la fin de chaque jour de travail.',
+    inputs: ['reponses'],
+    fn: (reponses) => {
+      const ok = (r) => r.correct === true || r.correct === 'true';
+      const tri = reponses.map((r, k) => ({ ...r, k, d: String(r.date).slice(0, 10) })).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : a.k - b.k));
+      const st = {}; const out = [];
+      tri.forEach((r, i) => {
+        const s = st[r.notion] = st[r.notion] || { R: 1000, n: 0, g: {} };
+        const E = 1 / (1 + Math.pow(10, (1000 - s.R) / 400));
+        let g = 40 * ((ok(r) ? 1 : 0) - E); const deja = s.g[r.d] || 0;
+        if (g > 0 && deja >= 100) g /= 4; s.g[r.d] = deja + g; s.R += g; s.n += 1;
+        if (!tri[i + 1] || tri[i + 1].d !== r.d) {
+          const cl = Object.values(st).filter((x) => x.n >= 3);
+          out.push({ date: r.d, points: cl.length ? Math.round(cl.reduce((a, x) => a + x.R, 0) / cl.length) : 1000, classees: cl.length, questions: tri.filter((x) => x.d === r.d).length });
+        }
+      });
+      return out;
+    }
+  });
+
+  dash.calc('global', {
+    title: 'Rang global et stats',
+    description: 'Rang global (moyenne des notions classées), réussite, jours, série, combo et couverture du plan.',
+    inputs: ['elo', 'reponses', 'historique'],
+    fn: (elo, reponses, historique) => {
+      const ok = (r) => r.correct === true || r.correct === 'true';
+      const T = [0, 950, 1050, 1150, 1250, 1350, 1450, 1550];
+      const noms = ['Fer', 'Bronze', 'Argent', 'Or', 'Platine', 'Diamant', 'Maître', 'Légende'];
+      const rang = (r) => { let i = 7; while (i > 0 && r < T[i]) i -= 1; if (i === 7) return noms[7]; const bas = i === 0 ? 850 : T[i]; const d = Math.max(1, Math.min(3, Math.floor((r - bas) / ((T[i + 1] - bas) / 3)) + 1)); return noms[i] + ' ' + ['I', 'II', 'III'][d - 1]; };
+      const cl = elo.filter((e) => e.classee);
+      const mmr = cl.length ? Math.round(cl.reduce((a, e) => a + e.points, 0) / cl.length) : 1000;
+      const jours = [...new Set(reponses.map((r) => String(r.date).slice(0, 10)))].sort();
+      let serie = jours.length ? 1 : 0;
+      for (let i = jours.length - 1; i > 0; i -= 1) { if ((new Date(jours[i]) - new Date(jours[i - 1])) / 864e5 === 1) serie += 1; else break; }
+      let combo = 0, c = 0; reponses.forEach((r) => { c = ok(r) ? c + 1 : 0; combo = Math.max(combo, c); });
+      const j7 = jours.slice(-7); const r7 = reponses.filter((r) => j7.includes(String(r.date).slice(0, 10)));
+      const pic = Math.max(mmr, ...historique.filter((h) => h.classees > 0).map((h) => h.points));
+      const bonnes = reponses.filter(ok).length;
+      return [{ mmr, rang: cl.length ? rang(mmr) : 'Placement', pic, picRang: cl.length ? rang(pic) : 'Placement', classees: cl.length, total: elo.length, couverture: elo.length ? elo.filter((e) => e.reponses > 0).length / elo.length : 0, questions: reponses.length, bonnes, taux: reponses.length ? bonnes / reponses.length : 0, taux7: r7.length ? r7.filter(ok).length / r7.length : 0, jours: jours.length, serie, combo, derniere: jours[jours.length - 1] || '' }];
+    }
+  });
+
+  dash.calc('modules', {
+    title: 'Rang par module',
+    description: 'Moyenne des points des notions classées de chaque module, meilleure notion et notions travaillées.',
+    inputs: ['elo'],
+    fn: (elo) => {
+      const m = {};
+      elo.forEach((e) => { const x = m[e.module] = m[e.module] || { module: e.module, total: 0, commencees: 0, somme: 0, classees: 0, questions: 0, best: 0 }; x.total += 1; x.questions += e.reponses; if (e.reponses) x.commencees += 1; if (e.classee) { x.classees += 1; x.somme += e.points; x.best = Math.max(x.best, e.pic); } });
+      return Object.values(m).map((x) => ({ module: x.module, points: x.classees ? Math.round(x.somme / x.classees) : 1000, best: x.best || 1000, classees: x.classees, commencees: x.commencees, total: x.total, questions: x.questions }));
+    }
+  });
+
+  dash.calc('seances', {
+    title: 'Score par séance',
+    description: 'Questions, bonnes réponses et points gagnés ou perdus par séance.',
+    inputs: ['reponses'],
+    fn: (reponses) => {
+      const ok = (r) => r.correct === true || r.correct === 'true';
+      const tri = reponses.map((r, k) => ({ ...r, k, d: String(r.date).slice(0, 10) })).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : a.k - b.k));
+      const st = {}; const s = {};
+      tri.forEach((r) => {
+        const n = st[r.notion] = st[r.notion] || { R: 1000, g: {} };
+        const E = 1 / (1 + Math.pow(10, (1000 - n.R) / 400));
+        let g = 40 * ((ok(r) ? 1 : 0) - E); const deja = n.g[r.d] || 0;
+        if (g > 0 && deja >= 100) g /= 4; n.g[r.d] = deja + g; n.R += g;
+        const x = s[r.seance] = s[r.seance] || { date: r.d, seance: r.seance, questions: 0, bonnes: 0, delta: 0 };
+        x.questions += 1; if (ok(r)) x.bonnes += 1; x.delta += g;
+      });
+      return Object.values(s).reverse().map((x) => ({ ...x, delta: Math.round(x.delta), score: x.bonnes / x.questions }));
+    }
+  });
+</script>
+
+<script>
+  const pct = d3.format('.0%');
+  const signe = (v) => (v > 0 ? '+' : v < 0 ? '−' : '±') + Math.abs(v);
+  const frDate = (d) => { const [y, m, j] = String(d).slice(0, 10).split('-'); return j + '/' + m + '/' + y; };
+  const T = () => window.RK_TIERS;
+  let uid = 0;
+  const embleme = (points, classee) => {
+    const k = window.rkRang(points); const t = classee ? T()[k.i] : { c1: '#c9ccd3', c2: '#5b5f68' };
+    const id = 'tkg' + (uid += 1); const tier = classee ? k.i : -1;
+    const pips = classee && k.div ? [0, 1, 2].map((j) => `<circle cx="${38 + j * 12}" cy="90" r="3.4" fill="${j < k.div ? t.c1 : 'none'}" stroke="${t.c1}" stroke-width="1.4"/>`).join('') : '';
+    const wings = tier >= 5 ? `<path d="M18 46 L2 34 L10 56 L4 66 L22 62 Z M82 46 L98 34 L90 56 L96 66 L78 62 Z" fill="url(#${id})" opacity=".9"/>` : '';
+    const crown = tier >= 6 ? `<path d="M36 14 L42 4 L50 12 L58 4 L64 14 Z" fill="${t.c1}"/>` : '';
+    const inner = tier >= 3 ? `<path d="M50 30 L64 44 L50 70 L36 44 Z" fill="${t.c1}" opacity=".9"/><path d="M50 30 L64 44 L50 48 L36 44 Z" fill="#fff" opacity=".4"/>` : tier >= 1 ? `<path d="M50 34 L62 48 L50 64 L38 48 Z" fill="${t.c1}" opacity=".85"/>` : `<text x="50" y="57" text-anchor="middle" font-size="20" font-weight="700" fill="${t.c1}">?</text>`;
+    return `<svg viewBox="0 0 100 100" role="img" aria-label="${classee ? k.label : 'Non classée'}"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${t.c1}"/><stop offset="1" stop-color="${t.c2}"/></linearGradient></defs>${tier >= 4 ? `<circle class="tk-glow" cx="50" cy="48" r="44" fill="${t.c1}" opacity=".5" filter="blur(6px)"/>` : ''}${wings}${crown}<path d="M50 10 L84 26 L80 62 L50 82 L20 62 L16 26 Z" fill="url(#${id})" stroke="${t.c2}" stroke-width="2"/><path d="M50 18 L76 30 L73 59 L50 74 L27 59 L24 30 Z" fill="#000" opacity=".25"/>${inner}${pips}</svg>`;
+  };
+  const chip = (serie) => { const s = document.createElement('span'); if (!serie) return s; s.className = 'tk-chip ' + (serie > 0 ? 'w' : 'l'); s.textContent = (serie > 0 ? 'Série V ' : 'Série D ') + Math.abs(serie); return s; };
+  window.rkTri = 'points'; window.rkModule = '';
+  const ARENE = 'index.html';
+  const ARENE_NOTIONS = ['demonstratifs', 'some-any-no', 'articles', 'present-simple-continu', '3e-personne-does', 'verbes-etat', 'preterit', 'present-perfect', 'plu-perfect', 'futur', 'fr-a-a', 'fr-et-est', 'fr-ces-ses', 'fr-son-sont', 'fr-e-er', 'fr-pp-accord', 'fr-futur-cond', 'fr-accord-verbe', 'fr-mail-pro', 'lx-produit', 'lx-arguments', 'lx-client', 'eu-histoire', 'eu-conseil', 'eu-frontieres', 'eu-relations', 'eu-orgs', 'eu-citoyennete', 'eu-institutions', 'eu-competences', 'eu-corruption', 'a3-culture', 'a3-communication', 'a3-diversite', 'a3-travail', 'a3-protection', 'a3-rse', 'a3-inclusion', 'ucd-strategie', 'ucd-audit', 'ucd-analyse', 'ucd-clients', 'ucd-objectifs', 'ucd-kpi', 'ucd-amelioration', 'ucd-droit', 'ucd-management', 'ucd-relation'];
+
+  const g1 = () => { const g = dash.data('global'); return g.status === 'ok' && g.data.length ? g.data[0] : null; };
+  const champ = (name, f) => dash.draw(name, (el) => { const g = g1(); el.textContent = g ? f(g) : '—'; });
+  champ('derniere', (g) => (g.derniere ? frDate(g.derniere) : '—'));
+  champ('badge-rang', (g) => g.rang + ' · ' + g.mmr);
+  champ('cur-rang', (g) => g.rang); champ('cur-mmr', (g) => String(g.mmr));
+  champ('pic-rang', (g) => g.picRang); champ('pic-mmr', (g) => String(g.pic));
+  champ('s-q', (g) => String(g.questions)); champ('s-w', (g) => String(g.bonnes)); champ('s-taux', (g) => pct(g.taux));
+  champ('s-taux7', (g) => pct(g.taux7) + ' sur les 7 derniers jours'); champ('s-combo', (g) => String(g.combo));
+  champ('s-jours', (g) => String(g.jours)); champ('s-serie', (g) => String(g.serie));
+  champ('s-cl', (g) => String(g.classees)); champ('s-tot', (g) => 'sur ' + g.total + ' notions'); champ('s-couv', (g) => pct(g.couverture));
+
+  const emb = (name, f) => dash.draw(name, (el) => { const g = g1(); if (!g) { el.replaceChildren(); return; } el.innerHTML = embleme(f(g), g.classees > 0); });
+  emb('badge-emb', (g) => g.mmr); emb('cur-emb', (g) => g.mmr); emb('pic-emb', (g) => g.pic);
+  dash.draw('cur-xp', (el) => {
+    const g = g1(); el.replaceChildren(); if (!g) return;
+    const k = window.rkRang(g.mmr); const t = T()[k.i];
+    const f = document.createElement('div'); f.style.width = (k.haut ? Math.max(3, Math.min(100, 100 * (g.mmr - k.bas) / (k.haut - k.bas))) : 100) + '%'; f.style.background = `linear-gradient(90deg, ${t.c2}, ${t.c1})`; el.append(f);
+  });
+  dash.draw('cur-next', (el) => {
+    const g = g1(); if (!g) { el.textContent = '—'; return; }
+    if (!g.classees) { el.textContent = 'Réponds 3 fois sur une notion pour obtenir ton premier rang.'; return; }
+    const k = window.rkRang(g.mmr);
+    el.textContent = k.haut ? Math.ceil(k.haut - g.mmr) + ' points avant ' + window.rkRang(k.haut + 0.1).label : 'Rang maximum. Garde-le !';
+  });
+
+  dash.draw('forme', (el) => {
+    const r = dash.data('reponses'); el.replaceChildren(); if (r.status !== 'ok') return;
+    r.data.slice(-10).forEach((x) => { const good = x.correct === true || x.correct === 'true'; const s = document.createElement('span'); s.className = 'tk-chip ' + (good ? 'w' : 'l'); s.style.margin = '0'; s.style.minWidth = '1.6rem'; s.style.textAlign = 'center'; s.textContent = good ? 'V' : 'D'; s.title = x.seance + ' · ' + x.question; el.append(s); });
+  });
+
+  dash.draw('modules', (el) => {
+    const m = dash.data('modules'); el.replaceChildren(); if (m.status !== 'ok') return;
+    m.data.forEach((r) => {
+      const row = document.createElement('div'); row.className = 'tk-row';
+      const e = document.createElement('div'); e.innerHTML = embleme(r.points, r.classees > 0);
+      const mid = document.createElement('div'); mid.style.minWidth = '0';
+      const nm = document.createElement('div'); nm.className = 'tk-row-name'; nm.textContent = r.module;
+      const sub = document.createElement('div'); sub.className = 'tk-row-sub'; sub.textContent = (r.classees ? window.rkRang(r.points).label : 'Placement') + ' · ' + r.commencees + '/' + r.total + ' notions · ' + r.questions + ' questions';
+      mid.append(nm, sub);
+      const rt = document.createElement('div'); rt.className = 'tk-row-r';
+      const p = document.createElement('div'); p.className = 'pts'; p.textContent = String(r.points);
+      const b = document.createElement('div'); b.className = 'tk-row-sub'; b.textContent = 'record ' + r.best;
+      rt.append(p, b); row.append(e, mid, rt); el.append(row);
+    });
+  });
+
+  dash.draw('filtre-module', (sel) => {
+    const e = dash.data('elo'); const mods = e.status === 'ok' ? [...new Set(e.data.map((r) => r.module))] : [];
+    sel.replaceChildren(new Option('Tous les modules', ''), ...mods.map((m) => new Option(m, m)));
+    sel.value = window.rkModule; sel.onchange = () => { window.rkModule = sel.value; dash.draw('toutes'); };
+  });
+  dash.draw('toutes', (el) => {
+    const e = dash.data('elo'); el.replaceChildren(); if (e.status !== 'ok') return;
+    let rows = e.data.filter((r) => !window.rkModule || r.module === window.rkModule);
+    const f = { plan: (a, b) => a.ordre - b.ordre, points: (a, b) => (b.reponses > 0) - (a.reponses > 0) || b.points - a.points || a.ordre - b.ordre, recent: (a, b) => b.delta7 - a.delta7 || a.ordre - b.ordre, grind: (a, b) => a.points - b.points }[window.rkTri];
+    if (window.rkTri === 'grind') rows = rows.filter((r) => r.reponses > 0);
+    rows.slice().sort(f).forEach((r) => {
+      const row = document.createElement('div'); row.className = 'tk-row';
+      const em = document.createElement('div'); em.innerHTML = embleme(r.points, r.classee);
+      const mid = document.createElement('div'); mid.style.minWidth = '0';
+      const nm = document.createElement('div'); nm.className = 'tk-row-name'; nm.textContent = r.notion;
+      const sub = document.createElement('div'); sub.className = 'tk-row-sub';
+      const rk = document.createElement('b'); rk.textContent = r.rang; if (r.classee) rk.style.color = T()[window.rkRang(r.points).i].c1;
+      sub.append(rk, r.reponses ? ' · ' + r.bonnes + 'V ' + (r.reponses - r.bonnes) + 'D · ' + pct(r.taux) : ' · pas encore travaillée');
+      if (r.reponses) sub.append(chip(r.serie));
+      mid.append(nm, sub);
+      const rt = document.createElement('div'); rt.className = 'tk-row-r';
+      const p = document.createElement('div'); p.className = 'pts'; p.textContent = r.reponses ? String(r.points) : '—';
+      const d = document.createElement('div'); d.className = 'tk-row-sub';
+      if (r.delta7) { const c = document.createElement('span'); c.className = 'tk-chip ' + (r.delta7 > 0 ? 'w' : 'l'); c.style.margin = '0'; c.textContent = signe(r.delta7); d.append(c); } else if (r.reponses) d.textContent = 'record ' + r.pic;
+      rt.append(p, d);
+      if (ARENE_NOTIONS.includes(r.id)) { const a = document.createElement('a'); a.className = 'tk-train'; a.href = ARENE + '#n-' + r.id;  a.textContent = '▶ S\'entraîner'; rt.append(a); }
+      row.append(em, mid, rt); el.append(row);
+    });
+  });
+  document.querySelectorAll('[data-tri]').forEach((b) => b.addEventListener('click', () => {
+    window.rkTri = b.getAttribute('data-tri');
+    document.querySelectorAll('[data-tri]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    dash.draw('toutes');
+  }));
+
+  dash.draw('sessions', (el) => {
+    const s = dash.data('seances'); el.replaceChildren(); if (s.status !== 'ok') return;
+    const parJour = d3.group(s.data, (r) => r.date);
+    [...parJour].forEach(([date, list]) => {
+      const tot = list.reduce((a, r) => a + r.delta, 0);
+      const h = document.createElement('div'); h.className = 'tk-sess-h';
+      const hb = document.createElement('b'); hb.textContent = 'Session du ' + frDate(date);
+      const hs = document.createElement('span'); hs.textContent = list.length + ' séance(s) · ' + signe(tot) + ' pts';
+      h.append(hb, hs); el.append(h);
+      list.forEach((r) => {
+        const row = document.createElement('div'); row.className = 'tk-match';
+        const bar = document.createElement('i'); bar.style.background = r.delta >= 0 ? 'var(--win)' : 'var(--loss)';
+        const mid = document.createElement('div'); mid.style.minWidth = '0';
+        const nm = document.createElement('div'); nm.className = 'tk-match-name'; nm.textContent = r.seance;
+        const sub = document.createElement('div'); sub.className = 'tk-match-sub'; sub.textContent = r.bonnes + ' / ' + r.questions + ' bonnes · ' + pct(r.score);
+        mid.append(nm, sub);
+        const v = document.createElement('div'); v.className = 'tk-match-r'; v.style.color = r.delta >= 0 ? 'var(--win)' : 'var(--loss)'; v.textContent = signe(r.delta);
+        row.append(bar, mid, v); el.append(row);
+      });
+    });
+  });
+
+  dash.draw('courbe', (el) => {
+    const h = dash.data('historique'); el.replaceChildren();
+    if (h.status !== 'ok' || !h.data.length) return;
+    const W = el.clientWidth || 400, H = 210, m = { t: 10, r: 14, b: 24, l: 42 };
+    const rows = h.data.map((d) => ({ ...d, dt: new Date(d.date) }));
+    const lo = Math.min(950, d3.min(rows, (d) => d.points) - 20), hi = Math.max(1150, d3.max(rows, (d) => d.points) + 20);
+    const x = rows.length > 1 ? d3.scaleUtc(d3.extent(rows, (d) => d.dt), [m.l, W - m.r]) : () => (m.l + W - m.r) / 2;
+    const y = d3.scaleLinear([lo, hi], [H - m.b, m.t]);
+    const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
+    T().forEach((t, i) => {
+      const top = T()[i + 1] ? T()[i + 1].min : 9999; const a = Math.max(t.min, lo), b = Math.min(top, hi);
+      if (b <= a) return;
+      svg.append('rect').attr('x', m.l).attr('width', W - m.l - m.r).attr('y', y(b)).attr('height', y(a) - y(b)).attr('fill', t.c1).attr('opacity', .08);
+      svg.append('text').attr('x', W - m.r - 4).attr('y', y(b) + 12).attr('text-anchor', 'end').attr('fill', '#8c98b3').style('font-size', '11px').text(t.nom);
+    });
+    svg.append('g').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r))).attr('font-size', null).attr('font-family', null).call((g) => { g.select('.domain').remove(); g.selectAll('line').attr('stroke', '#223050'); g.selectAll('text').attr('fill', '#8c98b3').style('font-size', '11px'); });
+    if (rows.length > 1) svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.min(rows.length, 6)).tickFormat(d3.utcFormat('%d/%m'))).attr('font-size', null).attr('font-family', null).call((g) => { g.select('.domain').attr('stroke', '#223050'); g.selectAll('text').attr('fill', '#8c98b3').style('font-size', '11px'); });
+    const grad = svg.append('defs').append('linearGradient').attr('id', 'tkArea').attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1);
+    [[0, .35], [1, 0]].forEach(([o, op]) => grad.append('stop').attr('offset', o).attr('stop-color', '#3d7bff').attr('stop-opacity', op));
+    if (rows.length > 1) svg.append('path').datum(rows).attr('fill', 'url(#tkArea)').attr('d', d3.area((d) => x(d.dt), H - m.b, (d) => y(d.points)));
+    svg.append('path').datum(rows).attr('fill', 'none').attr('stroke', '#3d7bff').attr('stroke-width', 2.5).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round').attr('d', d3.line((d) => x(d.dt), (d) => y(d.points)));
+    const tip = document.createElement('div'); tip.className = 'tk-tip'; tip.hidden = true; el.append(tip);
+    svg.selectAll('circle.pt').data(rows).join('circle').attr('class', 'pt').attr('cx', (d) => x(d.dt)).attr('cy', (d) => y(d.points)).attr('r', 5).attr('fill', '#3d7bff').attr('stroke', '#121a2c').attr('stroke-width', 2)
+      .on('pointerenter', (ev, d) => { tip.hidden = false; tip.replaceChildren(); const s = document.createElement('span'); s.textContent = frDate(d.date); tip.append(s, document.createElement('br'), d.points + ' pts · ' + window.rkRang(d.points).label); tip.style.left = Math.min(Math.max(0, x(d.dt) - 70), W - 160) + 'px'; tip.style.top = Math.max(0, y(d.points) - 50) + 'px'; })
+      .on('pointerleave', () => { tip.hidden = true; });
+  });
+
+  dash.draw('paliers', (el) => {
+    const g = g1(); el.replaceChildren(); const cur = g && g.classees ? window.rkRang(g.mmr).i : -1;
+    T().forEach((t, i) => {
+      const s = document.createElement('div'); s.className = 'tk-step' + (i === cur ? ' on' : '');
+      const em = document.createElement('div'); em.innerHTML = embleme(i === 0 ? 900 : t.min + 1, true);
+      const n = document.createElement('b'); n.textContent = t.nom; n.style.color = t.c1;
+      const p = document.createElement('span'); p.textContent = i === 0 ? '< 950' : (T()[i + 1] ? t.min + ' – ' + (T()[i + 1].min - 1) : t.min + '+');
+      s.append(em, n, p); el.append(s);
+    });
+  });
+</script>
+
+</div>
+<script>
+(async()=>{
+  const root=document.getElementById('dash-root');
+  const msg=(h)=>{root.insertAdjacentHTML('afterbegin','<div class="shim-msg">'+h+'</div>')};
+  if(!Data.ready){msg('Le site n\'est pas encore relié à la base de données.');return}
+  const u=await Data.user();
+  if(!u){msg('Connecte-toi d\'abord dans <a href="index.html">l\'Arène</a>, puis reviens ici.');return}
+  try{const [n,d]=await Promise.all([Data.notions(),Data.load()]);
+    shimRun(n,d.reponses.map(r=>({date:String(r.date).slice(0,10),seance:r.seance,question:r.question,notion:r.notion,correct:r.correct})));
+  }catch(e){msg('Impossible de charger tes données : '+(e.message||e))}
+})();
+</script>
+</body></html>

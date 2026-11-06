@@ -1,0 +1,3 @@
+.secrets/
+tools/*.json
+__pycache__/

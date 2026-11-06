@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Progression · Arène Icademie</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0a0f1c"><link rel="icon" href="icon.svg">
+<style>
+:root{color-scheme:dark;--font-anthropic-sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-anthropic-serif:Georgia,serif;
+--cds-font-size-caption:.8rem;--cds-font-size-body:.95rem;--cds-font-size-heading:1.05rem;--cds-font-size-title:1.9rem;--cds-font-weight-medium:600;
+--cds-gap-xs:.35rem;--cds-gap-sm:.6rem;--cds-gap-md:1rem;--cds-gap-lg:1.4rem;--cds-gap-xl:2rem;--cds-pad-xs:.35rem;--cds-pad-sm:.6rem;--cds-pad-md:.9rem;--cds-pad-lg:1.2rem;--cds-pad-xl:2rem;
+--cds-radius:8px;--cds-dur-slow:.4s;--cds-ease-out:cubic-bezier(.2,.8,.2,1);--color-fg:#e9eef8;--color-bg:#0a0f1c;--color-panel:#121a2c;--color-border-line:#223050;--color-fg-muted:#8c98b3}
+html,body{margin:0;background:#0a0f1c;color:#e9eef8}
+.shim-msg{max-width:30rem;margin:3rem auto;padding:1.2rem;border:1px solid #223050;border-radius:10px;background:#121a2c;font-family:system-ui,sans-serif;text-align:center}
+.shim-msg a{color:#8fb0ff}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script>
+// Petit remplaçant de l'API "dash" du tableau de bord Claude : mêmes appels, données venant de Supabase.
+(function(){
+  const calcs=[],draws={},store={};
+  window.dash={
+    colors:['#3d7bff','#7a5cff','#34d27b','#ffcf5a','#ff5a6e','#8ff0e0','#e3a6ff','#f0a66a'],
+    calc(id,o){calcs.push({id,...o})},
+    draw(name,fn){if(fn)draws[name]=fn;else runDraw(name)},
+    data(id){return store[id]||{status:'loading',data:[]}},
+    onData(fn){fn()}
+  };
+  function runDraw(name){const fn=draws[name];if(!fn)return;document.querySelectorAll('[data-draw="'+name+'"]').forEach(el=>{try{el.textContent='';fn(el)}catch(e){console.error(name,e)}})}
+  window.shimRun=function(notions,reponses){
+    store.notions={status:'ok',data:notions};store.reponses={status:'ok',data:reponses};
+    calcs.forEach(c=>{try{store[c.id]={status:'ok',data:c.fn(...c.inputs.map(i=>store[i].data))}}catch(e){console.error(c.id,e);store[c.id]={status:'error',data:[]}}});
+    Object.keys(draws).forEach(runDraw);
+  };
+  let w=innerWidth;addEventListener('resize',()=>{if(Math.abs(innerWidth-w)>40){w=innerWidth;Object.keys(draws).forEach(runDraw)}});
+})();
+</script>
+</head><body>
+<div id="dash-root">
+%%DASH%%
+</div>
+<script>
+(async()=>{
+  const root=document.getElementById('dash-root');
+  const msg=(h)=>{root.insertAdjacentHTML('afterbegin','<div class="shim-msg">'+h+'</div>')};
+  if(!Data.ready){msg('Le site n\'est pas encore relié à la base de données.');return}
+  const u=await Data.user();
+  if(!u){msg('Connecte-toi d\'abord dans <a href="index.html">l\'Arène</a>, puis reviens ici.');return}
+  try{const [n,d]=await Promise.all([Data.notions(),Data.load()]);
+    shimRun(n,d.reponses.map(r=>({date:String(r.date).slice(0,10),seance:r.seance,question:r.question,notion:r.notion,correct:r.correct})));
+  }catch(e){msg('Impossible de charger tes données : '+(e.message||e))}
+})();
+</script>
+</body></html>
