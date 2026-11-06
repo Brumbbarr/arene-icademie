@@ -243,15 +243,15 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
     </div>
 
     <section class="tk-card" id="paliers" aria-label="Les rangs">
-      <div class="tk-card-h"><h2>Les rangs</h2><span>divisions I, II, III · départ à 0 point</span></div>
+      <div class="tk-card-h"><h2>Les rangs</h2><span>divisions I, II, III · départ à 100 points</span></div>
       <div class="tk-card-b"><div class="tk-ladder" data-draw="paliers" data-source="global"></div></div>
     </section>
 
     <details>
       <summary>Comment les points sont calculés</summary>
       <dl>
-        <dt>Points (Elo)</dt><dd>Chaque notion démarre à 0 point : plus tu es haut, moins une bonne réponse rapporte et plus une erreur coûte. Gain = 40 × (résultat − chance de réussite prévue).</dd>
-        <dt>Fatigue du jour</dt><dd>Sur une même notion, au-delà de +100 points dans la journée, les gains sont divisés par 4 : pour monter, il faut revenir d'autres jours.</dd>
+        <dt>Points (Elo)</dt><dd>Chaque notion démarre à 100 points (tu peux descendre jusqu'à 0) : plus tu es haut, moins une bonne réponse rapporte et plus une erreur coûte. Gain = 60 × (résultat − chance de réussite prévue).</dd>
+        <dt>Fatigue du jour</dt><dd>Sur une même notion, au-delà de +150 points dans la journée, les gains sont divisés par 4 : pour monter, il faut revenir d'autres jours.</dd>
         <dt>Placement</dt><dd>Une notion avec moins de 3 réponses est en placement et ne compte pas dans le rang global.</dd>
         <dt>Rang global</dt><dd>Moyenne des points des notions classées.</dd>
         <dt>Série</dt><dd>Jours consécutifs avec au moins une question, jusqu'à ta dernière séance.</dd>
@@ -263,13 +263,13 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
 <script>
   window.RK_TIERS = [
     { nom: 'Fer', min: 0, c1: '#9aa0ab', c2: '#4b4f57' },
-    { nom: 'Bronze', min: 30, c1: '#f0a66a', c2: '#7a4420' },
-    { nom: 'Argent', min: 80, c1: '#e6edf6', c2: '#7d8a9c' },
-    { nom: 'Or', min: 140, c1: '#ffe27a', c2: '#b8841a' },
-    { nom: 'Platine', min: 210, c1: '#8ff0e0', c2: '#1f8f84' },
-    { nom: 'Diamant', min: 290, c1: '#a9c4ff', c2: '#3557d6' },
-    { nom: 'Maître', min: 380, c1: '#e3a6ff', c2: '#7a2fc0' },
-    { nom: 'Légende', min: 480, c1: '#ffb3c1', c2: '#d1203f' }
+    { nom: 'Bronze', min: 150, c1: '#f0a66a', c2: '#7a4420' },
+    { nom: 'Argent', min: 220, c1: '#e6edf6', c2: '#7d8a9c' },
+    { nom: 'Or', min: 310, c1: '#ffe27a', c2: '#b8841a' },
+    { nom: 'Platine', min: 420, c1: '#8ff0e0', c2: '#1f8f84' },
+    { nom: 'Diamant', min: 540, c1: '#a9c4ff', c2: '#3557d6' },
+    { nom: 'Maître', min: 670, c1: '#e3a6ff', c2: '#7a2fc0' },
+    { nom: 'Légende', min: 820, c1: '#ffb3c1', c2: '#d1203f' }
   ];
   window.rkRang = (r) => {
     const T = window.RK_TIERS;
@@ -285,24 +285,24 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
 <script>
   dash.calc('elo', {
     title: 'Points par notion',
-    description: 'Elo de chaque notion : départ 0, question à 0, K = 40, gains divisés par 4 au-delà de +100 par jour.',
+    description: 'Elo de chaque notion : départ 100, question à 100, K = 60, gains divisés par 4 au-delà de +150 par jour.',
     inputs: ['notions', 'reponses'],
     fn: (notions, reponses) => {
       const ok = (r) => r.correct === true || r.correct === 'true';
-      const T = [0, 30, 80, 140, 210, 290, 380, 480];
+      const T = [0, 150, 220, 310, 420, 540, 670, 820];
       const noms = ['Fer', 'Bronze', 'Argent', 'Or', 'Platine', 'Diamant', 'Maître', 'Légende'];
       const rang = (r) => { let i = 7; while (i > 0 && r < T[i]) i -= 1; if (i === 7) return noms[7]; const bas = T[i]; const d = Math.max(1, Math.min(3, Math.floor((r - bas) / ((T[i + 1] - bas) / 3)) + 1)); return noms[i] + ' ' + ['I', 'II', 'III'][d - 1]; };
       const tri = reponses.map((r, k) => ({ ...r, k, d: String(r.date).slice(0, 10) })).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : a.k - b.k));
       const derniers = [...new Set(tri.map((r) => r.d))].slice(-7);
       return notions.map((n, ordre) => {
-        let R = 0, pic = 0, gainJour = {}, avant7 = null, serie = 0;
+        let R = 100, pic = 100, gainJour = {}, avant7 = null, serie = 0;
         const mine = tri.filter((r) => r.notion === n.id);
         mine.forEach((r, j) => {
           if (avant7 === null && derniers.length && r.d >= derniers[0]) avant7 = R;
-          const E = 1 / (1 + Math.pow(10, (0 - R) / 400));
-          let g = 40 * ((ok(r) ? 1 : 0) - E);
+          const E = 1 / (1 + Math.pow(10, (100 - R) / 600));
+          let g = 60 * ((ok(r) ? 1 : 0) - E);
           const deja = gainJour[r.d] || 0;
-          if (g > 0 && deja >= 100) g /= 4;
+          if (g > 0 && deja >= 150) g /= 4;
           gainJour[r.d] = deja + g; R = Math.max(0, R + g); if (j >= 2) pic = Math.max(pic, R);
           serie = ok(r) ? (serie > 0 ? serie + 1 : 1) : (serie < 0 ? serie - 1 : -1);
         });
@@ -322,13 +322,13 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
       const tri = reponses.map((r, k) => ({ ...r, k, d: String(r.date).slice(0, 10) })).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : a.k - b.k));
       const st = {}; const out = [];
       tri.forEach((r, i) => {
-        const s = st[r.notion] = st[r.notion] || { R: 0, n: 0, g: {} };
-        const E = 1 / (1 + Math.pow(10, (0 - s.R) / 400));
-        let g = 40 * ((ok(r) ? 1 : 0) - E); const deja = s.g[r.d] || 0;
-        if (g > 0 && deja >= 100) g /= 4; s.g[r.d] = deja + g; s.R = Math.max(0, s.R + g); s.n += 1;
+        const s = st[r.notion] = st[r.notion] || { R: 100, n: 0, g: {} };
+        const E = 1 / (1 + Math.pow(10, (100 - s.R) / 600));
+        let g = 60 * ((ok(r) ? 1 : 0) - E); const deja = s.g[r.d] || 0;
+        if (g > 0 && deja >= 150) g /= 4; s.g[r.d] = deja + g; s.R = Math.max(0, s.R + g); s.n += 1;
         if (!tri[i + 1] || tri[i + 1].d !== r.d) {
           const cl = Object.values(st).filter((x) => x.n >= 3);
-          out.push({ date: r.d, points: cl.length ? Math.round(cl.reduce((a, x) => a + x.R, 0) / cl.length) : 0, classees: cl.length, questions: tri.filter((x) => x.d === r.d).length });
+          out.push({ date: r.d, points: cl.length ? Math.round(cl.reduce((a, x) => a + x.R, 0) / cl.length) : 100, classees: cl.length, questions: tri.filter((x) => x.d === r.d).length });
         }
       });
       return out;
@@ -341,11 +341,11 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
     inputs: ['elo', 'reponses', 'historique'],
     fn: (elo, reponses, historique) => {
       const ok = (r) => r.correct === true || r.correct === 'true';
-      const T = [0, 30, 80, 140, 210, 290, 380, 480];
+      const T = [0, 150, 220, 310, 420, 540, 670, 820];
       const noms = ['Fer', 'Bronze', 'Argent', 'Or', 'Platine', 'Diamant', 'Maître', 'Légende'];
       const rang = (r) => { let i = 7; while (i > 0 && r < T[i]) i -= 1; if (i === 7) return noms[7]; const bas = T[i]; const d = Math.max(1, Math.min(3, Math.floor((r - bas) / ((T[i + 1] - bas) / 3)) + 1)); return noms[i] + ' ' + ['I', 'II', 'III'][d - 1]; };
       const cl = elo.filter((e) => e.classee);
-      const mmr = cl.length ? Math.round(cl.reduce((a, e) => a + e.points, 0) / cl.length) : 0;
+      const mmr = cl.length ? Math.round(cl.reduce((a, e) => a + e.points, 0) / cl.length) : 100;
       const jours = [...new Set(reponses.map((r) => String(r.date).slice(0, 10)))].sort();
       let serie = jours.length ? 1 : 0;
       for (let i = jours.length - 1; i > 0; i -= 1) { if ((new Date(jours[i]) - new Date(jours[i - 1])) / 864e5 === 1) serie += 1; else break; }
@@ -364,7 +364,7 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
     fn: (elo) => {
       const m = {};
       elo.forEach((e) => { const x = m[e.module] = m[e.module] || { module: e.module, total: 0, commencees: 0, somme: 0, classees: 0, questions: 0, best: 0 }; x.total += 1; x.questions += e.reponses; if (e.reponses) x.commencees += 1; if (e.classee) { x.classees += 1; x.somme += e.points; x.best = Math.max(x.best, e.pic); } });
-      return Object.values(m).map((x) => ({ module: x.module, points: x.classees ? Math.round(x.somme / x.classees) : 0, best: x.best || 0, classees: x.classees, commencees: x.commencees, total: x.total, questions: x.questions }));
+      return Object.values(m).map((x) => ({ module: x.module, points: x.classees ? Math.round(x.somme / x.classees) : 100, best: x.best || 100, classees: x.classees, commencees: x.commencees, total: x.total, questions: x.questions }));
     }
   });
 
@@ -377,10 +377,10 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
       const tri = reponses.map((r, k) => ({ ...r, k, d: String(r.date).slice(0, 10) })).sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : a.k - b.k));
       const st = {}; const s = {};
       tri.forEach((r) => {
-        const n = st[r.notion] = st[r.notion] || { R: 0, g: {} };
-        const E = 1 / (1 + Math.pow(10, (0 - n.R) / 400));
-        let g = 40 * ((ok(r) ? 1 : 0) - E); const deja = n.g[r.d] || 0;
-        if (g > 0 && deja >= 100) g /= 4; n.g[r.d] = deja + g; n.R = Math.max(0, n.R + g);
+        const n = st[r.notion] = st[r.notion] || { R: 100, g: {} };
+        const E = 1 / (1 + Math.pow(10, (100 - n.R) / 600));
+        let g = 60 * ((ok(r) ? 1 : 0) - E); const deja = n.g[r.d] || 0;
+        if (g > 0 && deja >= 150) g /= 4; n.g[r.d] = deja + g; n.R = Math.max(0, n.R + g);
         const x = s[r.seance] = s[r.seance] || { date: r.d, seance: r.seance, questions: 0, bonnes: 0, delta: 0 };
         x.questions += 1; if (ok(r)) x.bonnes += 1; x.delta += g;
       });
@@ -509,7 +509,7 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
     if (h.status !== 'ok' || !h.data.length) return;
     const W = el.clientWidth || 400, H = 210, m = { t: 10, r: 14, b: 24, l: 42 };
     const rows = h.data.map((d) => ({ ...d, dt: new Date(d.date) }));
-    const lo = Math.min(0, d3.min(rows, (d) => d.points) - 20), hi = Math.max(150, d3.max(rows, (d) => d.points) + 20);
+    const lo = Math.min(0, d3.min(rows, (d) => d.points) - 20), hi = Math.max(250, d3.max(rows, (d) => d.points) + 20);
     const x = rows.length > 1 ? d3.scaleUtc(d3.extent(rows, (d) => d.dt), [m.l, W - m.r]) : () => (m.l + W - m.r) / 2;
     const y = d3.scaleLinear([lo, hi], [H - m.b, m.t]);
     const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`);
@@ -537,7 +537,7 @@ html,body{margin:0;background:#0a0f1c;color:#e9eef8}
       const s = document.createElement('div'); s.className = 'tk-step' + (i === cur ? ' on' : '');
       const em = document.createElement('div'); em.innerHTML = embleme(i === 0 ? 900 : t.min + 1, true);
       const n = document.createElement('b'); n.textContent = t.nom; n.style.color = t.c1;
-      const p = document.createElement('span'); p.textContent = i === 0 ? '0 – 29' : (T()[i + 1] ? t.min + ' – ' + (T()[i + 1].min - 1) : t.min + '+');
+      const p = document.createElement('span'); p.textContent = i === 0 ? '0 – 149' : (T()[i + 1] ? t.min + ' – ' + (T()[i + 1].min - 1) : t.min + '+');
       s.append(em, n, p); el.append(s);
     });
   });

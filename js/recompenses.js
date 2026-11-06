@@ -1,14 +1,14 @@
 // Arènes (selon les points globaux), succès, titres et cartes à collectionner.
 window.ARENES = [
   {n:1, nom:'La Plaine',             min:0,    bg:'radial-gradient(130% 120% at 50% 0%,#2f5a2a 0%,#152a14 55%,#081008 100%)', acc:'#8fe07a', diff:[7,2,1], deco:'🌾'},
-  {n:2, nom:'Le Quai de chargement', min:30, bg:'radial-gradient(130% 120% at 50% 0%,#3a3f4a 0%,#1a1d24 55%,#0d0f14 100%)', acc:'#9aa0ab', diff:[6,3,1], deco:'📦'},
-  {n:3, nom:'L\'Entrepôt',           min:80, bg:'radial-gradient(130% 120% at 50% 0%,#5a3a1e 0%,#2a1a10 55%,#110a06 100%)', acc:'#f0a66a', diff:[4,4,2], deco:'🏭'},
-  {n:4, nom:'La Chambre froide',     min:140, bg:'radial-gradient(130% 120% at 50% 0%,#1e4a6a 0%,#0f2236 55%,#060d16 100%)', acc:'#8fd8ff', diff:[3,4,3], deco:'❄️'},
-  {n:5, nom:'Le Salon professionnel',min:210, bg:'radial-gradient(130% 120% at 50% 0%,#5a4a12 0%,#2a2208 55%,#110d03 100%)', acc:'#ffe27a', diff:[2,4,4], deco:'🎪'},
-  {n:6, nom:'La Salle du conseil',   min:290, bg:'radial-gradient(130% 120% at 50% 0%,#125a50 0%,#082a26 55%,#03110f 100%)', acc:'#8ff0e0', diff:[1,4,5], deco:'💼'},
-  {n:7, nom:'La Tour de verre',      min:380, bg:'radial-gradient(130% 120% at 50% 0%,#24387a 0%,#101a3a 55%,#060a18 100%)', acc:'#a9c4ff', diff:[1,3,6], deco:'🏙️'},
-  {n:8, nom:'Le Sommet',             min:480, bg:'radial-gradient(130% 120% at 50% 0%,#4a1a6a 0%,#220c34 55%,#0e0516 100%)', acc:'#e3a6ff', diff:[0,3,7], deco:'🏔️'},
-  {n:9, nom:'Le Panthéon',           min:580, bg:'radial-gradient(130% 120% at 50% 0%,#6a1a2a 0%,#340c14 55%,#16050a 100%)', acc:'#ffb3c1', diff:[0,2,8], deco:'👑'}
+  {n:2, nom:'Le Quai de chargement', min:150, bg:'radial-gradient(130% 120% at 50% 0%,#3a3f4a 0%,#1a1d24 55%,#0d0f14 100%)', acc:'#9aa0ab', diff:[6,3,1], deco:'📦'},
+  {n:3, nom:'L\'Entrepôt',           min:220, bg:'radial-gradient(130% 120% at 50% 0%,#5a3a1e 0%,#2a1a10 55%,#110a06 100%)', acc:'#f0a66a', diff:[4,4,2], deco:'🏭'},
+  {n:4, nom:'La Chambre froide',     min:310, bg:'radial-gradient(130% 120% at 50% 0%,#1e4a6a 0%,#0f2236 55%,#060d16 100%)', acc:'#8fd8ff', diff:[3,4,3], deco:'❄️'},
+  {n:5, nom:'Le Salon professionnel',min:420, bg:'radial-gradient(130% 120% at 50% 0%,#5a4a12 0%,#2a2208 55%,#110d03 100%)', acc:'#ffe27a', diff:[2,4,4], deco:'🎪'},
+  {n:6, nom:'La Salle du conseil',   min:540, bg:'radial-gradient(130% 120% at 50% 0%,#125a50 0%,#082a26 55%,#03110f 100%)', acc:'#8ff0e0', diff:[1,4,5], deco:'💼'},
+  {n:7, nom:'La Tour de verre',      min:670, bg:'radial-gradient(130% 120% at 50% 0%,#24387a 0%,#101a3a 55%,#060a18 100%)', acc:'#a9c4ff', diff:[1,3,6], deco:'🏙️'},
+  {n:8, nom:'Le Sommet',             min:820, bg:'radial-gradient(130% 120% at 50% 0%,#4a1a6a 0%,#220c34 55%,#0e0516 100%)', acc:'#e3a6ff', diff:[0,3,7], deco:'🏔️'},
+  {n:9, nom:'Le Panthéon',           min:970, bg:'radial-gradient(130% 120% at 50% 0%,#6a1a2a 0%,#340c14 55%,#16050a 100%)', acc:'#ffb3c1', diff:[0,2,8], deco:'👑'}
 ];window.arene = (pts) => { let a = ARENES[0]; ARENES.forEach((x) => { if (pts >= x.min) a = x; }); return a; };
 
 // Cartes à collectionner : expressions anglaises utiles au travail. r = rareté.

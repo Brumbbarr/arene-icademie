@@ -308,7 +308,7 @@ h1,h2,.label,.mode b,.bossc b,.go,.quit,.tabbar button,.tabbar a,.seg button,.mo
 <script src="js/pixel.js"></script>
 <script src="js/ui.js"></script>
 <script>
-const TIERS=[{nom:'Fer',min:0,c1:'#9aa0ab',c2:'#4b4f57'},{nom:'Bronze',min:30,c1:'#f0a66a',c2:'#7a4420'},{nom:'Argent',min:80,c1:'#e6edf6',c2:'#7d8a9c'},{nom:'Or',min:140,c1:'#ffe27a',c2:'#b8841a'},{nom:'Platine',min:210,c1:'#8ff0e0',c2:'#1f8f84'},{nom:'Diamant',min:290,c1:'#a9c4ff',c2:'#3557d6'},{nom:'Maître',min:380,c1:'#e3a6ff',c2:'#7a2fc0'},{nom:'Légende',min:480,c1:'#ffb3c1',c2:'#d1203f'}];
+const TIERS=[{nom:'Fer',min:0,c1:'#9aa0ab',c2:'#4b4f57'},{nom:'Bronze',min:150,c1:'#f0a66a',c2:'#7a4420'},{nom:'Argent',min:220,c1:'#e6edf6',c2:'#7d8a9c'},{nom:'Or',min:310,c1:'#ffe27a',c2:'#b8841a'},{nom:'Platine',min:420,c1:'#8ff0e0',c2:'#1f8f84'},{nom:'Diamant',min:540,c1:'#a9c4ff',c2:'#3557d6'},{nom:'Maître',min:670,c1:'#e3a6ff',c2:'#7a2fc0'},{nom:'Légende',min:820,c1:'#ffb3c1',c2:'#d1203f'}];
 function rang(r){let i=TIERS.length-1;while(i>0&&r<TIERS[i].min)i--;if(i===TIERS.length-1)return{i,label:TIERS[i].nom,div:0};const bas=TIERS[i].min,w=(TIERS[i+1].min-bas)/3,div=Math.max(1,Math.min(3,Math.floor((r-bas)/w)+1));return{i,label:TIERS[i].nom+' '+['I','II','III'][div-1],div}}
 let uid=0;
 function emb(points,classee){const k=rang(points);return pxEmblem(classee?k.i:-1,classee?k.div:0)}
@@ -319,8 +319,8 @@ const strip=s=>norm(s).replace(/[.!?]+$/,'');
 
 // ---- Elo, same rules as the dashboard
 function elo(answers){const st={};const sorted=answers.map((r,k)=>({...r,k})).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.k-b.k);
- sorted.forEach(r=>{const s=st[r.notion]=st[r.notion]||{R:0,n:0,g:{}};const E=1/(1+Math.pow(10,(0-s.R)/400));let g=40*((r.correct?1:0)-E);const d=s.g[r.date]||0;if(g>0&&d>=100)g/=4;s.g[r.date]=d+g;s.R=Math.max(0,s.R+g);s.n++});return st}
-function globalMmr(st){const cl=Object.values(st).filter(x=>x.n>=3);return cl.length?Math.round(cl.reduce((a,x)=>a+Math.round(x.R),0)/cl.length):0}
+ sorted.forEach(r=>{const s=st[r.notion]=st[r.notion]||{R:100,n:0,g:{}};const E=1/(1+Math.pow(10,(100-s.R)/600));let g=60*((r.correct?1:0)-E);const d=s.g[r.date]||0;if(g>0&&d>=150)g/=4;s.g[r.date]=d+g;s.R=Math.max(0,s.R+g);s.n++});return st}
+function globalMmr(st){const cl=Object.values(st).filter(x=>x.n>=3);return cl.length?Math.round(cl.reduce((a,x)=>a+Math.round(x.R),0)/cl.length):100}
 
 // ---- state
 let db=null,col=null,base=[],sessions=[],bossWins={},ready=false,saveErr='';
@@ -353,7 +353,7 @@ const BOSSES=[
 function pick(pool,n,weights){const p=pool.slice(),out=[];while(out.length<n&&p.length){let tot=p.reduce((a,q)=>a+(weights?weights(q):1),0),r=Math.random()*tot,i=0;for(;i<p.length;i++){r-=weights?weights(p[i]):1;if(r<=0)break}out.push(p.splice(Math.min(i,p.length-1),1)[0])}return out}
 function startMode(m){const st=elo(allAnswers());let pool=BANQUE.filter(q=>inMod(q)&&(!m.dmax||q.d<=m.dmax));
  const ar=arene(globalMmr(st));const dw=q=>ar.diff[q.d-1]+.3;
- const w=m.weak?q=>{const R=(st[q.n]||{R:0}).R;return Math.max(.2,Math.pow(1.012,150-R))*dw(q)}:dw;
+ const w=m.weak?q=>{const R=(st[q.n]||{R:100}).R;return Math.max(.2,Math.pow(1.008,325-R))*dw(q)}:dw;
  begin({kind:'mode',titre:m.nom,qs:pick(pool,m.n,w)})}
 function startBoss(b){S.pendingBoss=b;S.screen='bossintro';render()}
 async function claimQuest(){const q=questDuJour();if(q.claimed||q.done<q.goal)return;const carte=tirerCarte(1,true,true,Date.now());
@@ -370,7 +370,7 @@ let timerId=null;
 function answer(given){if(S.answered)return;const q=S.m.qs[S.idx];let ok;
  if(q.t==='mc')ok=given===q.a;else ok=q.a.some(a=>strip(a)===strip(given));
  S.answered=true;S.last={ok,given};clearInterval(timerId);
- const cur=elo(allAnswers().concat(S.answers));const s=cur[q.n]||{R:0,g:{}};const E=1/(1+Math.pow(10,(0-s.R)/400));let g=40*((ok?1:0)-E);const d=(s.g||{})[today()]||0;if(g>0&&d>=100)g/=4;g=Math.max(-s.R,g);S.last.delta=Math.round(g);
+ const cur=elo(allAnswers().concat(S.answers));const s=cur[q.n]||{R:100,g:{}};const E=1/(1+Math.pow(10,(100-s.R)/600));let g=60*((ok?1:0)-E);const d=(s.g||{})[today()]||0;if(g>0&&d>=150)g/=4;g=Math.max(-s.R,g);S.last.delta=Math.round(g);
  S.answers.push({date:today(),seance:S.m.titre,question:'Q'+(S.idx+1),notion:q.n,correct:ok,given:q.t==='mc'?q.o[given]||'(temps écoulé)':given,attendu:q.t==='mc'?q.o[q.a]:q.a[0]});
  if(ok){S.combo++;S.best=Math.max(S.best,S.combo)}else{S.combo=0;if(S.m.kind==='boss')S.lives--}
  render();floatText((S.last.delta>=0?'+':'')+S.last.delta+' pts',ok);if(ok){S.combo>=3&&S.combo%3===0?SFX.combo():SFX.good()}else SFX.bad()}
@@ -446,7 +446,7 @@ function lobby(){const st=elo(allAnswers()),g=globalMmr(st),cl=Object.values(st)
 
 // ---- écran Jouer
 function jouer(){const st=elo(allAnswers());
- const notions=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id)).map(id=>({id,R:(st[id]||{R:0}).R,n:(st[id]||{n:0}).n}));
+ const notions=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id)).map(id=>({id,R:(st[id]||{R:100}).R,n:(st[id]||{n:0}).n}));
  return `<div class="jh"><span class="label">Matière</span><select class="modsel" id="modsel" aria-label="Matière">${Object.entries(MODS).map(([k2,m])=>`<option value="${k2}" ${k2===MOD?'selected':''}>${m.nom}</option>`).join('')}</select></div>
  <div class="lob"><div class="lob-b"><span class="label">Modes</span>
  <div class="modes">${MODES.map(m=>`<button class="mode" data-mode="${m.id}"><span class="ic" style="background:${m.col}22;color:${m.col}">${m.ic}</span><span><b>${m.nom}</b><span>${m.sub}</span></span><span class="t">${m.t}</span></button>`).join('')}</div>
@@ -473,7 +473,7 @@ function profil(){const all=allAnswers(),st=elo(all),g=globalMmr(st),cl=Object.v
  let combo=0,c=0;all.slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0).forEach(a=>{c=a.correct?c+1:0;combo=Math.max(combo,c)});
  const wins=Object.values(bossWins).reduce((a,b)=>a+b,0);
  const stats=[['Questions',all.length],['Win rate',all.length?Math.round(100*ok/all.length)+' %':'—'],['Meilleur combo',combo],['Jours joués',jours.length],['Série',serie+' j'],['Boss vaincus',wins]];
- const ns=Object.keys(NOTIONS_NOMS).map(id=>({id,s:st[id]||{R:0,n:0}})).sort((a,b)=>(b.s.n>0)-(a.s.n>0)||b.s.R-a.s.R);
+ const ns=Object.keys(NOTIONS_NOMS).map(id=>({id,s:st[id]||{R:100,n:0}})).sort((a,b)=>(b.s.n>0)-(a.s.n>0)||b.s.R-a.s.R);
  return `<div class="hud"><button class="quit" data-act="lobby">← Lobby</button><span class="label" style="flex:1;text-align:center">Mon profil · en direct</span><a class="quit" href="progression.html" style="text-decoration:none">📈 Progression</a></div>
  <div class="card res-h">${emb(g,cl)}<span class="big" style="font-size:1.6rem">${cl?rang(g).label:'Placement'}</span><span class="pts">${g} pts</span></div>
  <div class="grid6">${stats.map(([l,v])=>`<div class="card"><span class="label">${l}</span><div class="pts" style="font-size:1.3rem">${v}</div></div>`).join('')}</div>
@@ -499,7 +499,7 @@ function results(){const m=S.m,boss=m.kind==='boss',ok=S.answers.filter(a=>a.cor
  if(m.kind==='quete')return `<div class="card res-h"><span class="label" style="color:var(--gold)">⚔️ Quête du jour accomplie</span><span class="big">Bien joué !</span></div><div class="card" style="text-align:center"><span class="label">🎁 Coffre de quête</span>${S.chestOpen?carteHtml(S.carte,S.carteNeuve):`<button class="chest" data-act="chest"><span class="chest-ic">${pxChest(false)}</span><b>Touche pour ouvrir le coffre</b></button>`}</div><p class="save">${esc(S.saving||'')}</p><button class="go" data-act="lobby">Retour à l'accueil</button>`;
  const ov=S.showArena?(()=>{const a=arene(globalMmr(elo(allAnswers().concat(S.answers)))),i=ARENES.indexOf(a);return `<div class="overlay" style="--arena:${a.acc}"><div class="ov-card pop"><div class="hero ov-hero"><div class="hero-sky"></div>${pxScene(i)}</div><span class="label" style="color:${a.acc}">Nouvelle arène débloquée</span><h2>${a.deco} ${esc(a.nom)}</h2><p class="note">Les questions deviennent plus difficiles. Le décor de l'app change.</p><button class="go" data-act="closeov">Entrer dans l'arène</button></div></div>`})():'';
  const before=S.before,after=elo(allAnswers().concat(S.answers));const gB=globalMmr(before),gA=globalMmr(after);
- const touched=[...new Set(S.answers.map(a=>a.notion))].map(id=>({id,b:(before[id]||{R:0,n:0}),a:after[id]}));
+ const touched=[...new Set(S.answers.map(a=>a.notion))].map(id=>({id,b:(before[id]||{R:100,n:0}),a:after[id]}));
  const title=boss?(S.won?'VICTOIRE':'DÉFAITE'):'Session terminée';const clA=Object.values(after).some(x=>x.n>=3);
  return `<div class="card res-h">${emb(gA,clA)}<span class="label">${esc(m.titre)}</span><span class="big" style="color:${boss?(S.won?'var(--gold)':'var(--loss)'):'var(--fg)'}">${title}</span><span>${ok}/${tot} bonnes · meilleur combo ${S.best}</span><span class="pts ${gA-gB>=0?'up':'down'}">Rang global : ${gA-gB>=0?'+':''}${gA-gB} pts → ${clA?rang(gA).label:'Placement'}</span></div>
  <div class="card"><span class="label">Points par notion</span><div class="list">${touched.map(t=>{const d=Math.round(t.a.R-t.b.R),up=t.a.n>=3&&(t.b.n<3||rang(t.a.R).label!==rang(t.b.R).label)&&t.a.R>t.b.R;return `<div class="li">${emb(t.a.R,t.a.n>=3)}<div>${esc(NOTIONS_NOMS[t.id])}<small>${t.a.n>=3?rang(t.a.R).label:'Placement '+t.a.n+'/3'} · ${Math.round(t.a.R)} pts ${up?'<span class="rankup">▲ RANG SUPÉRIEUR</span>':''}</small></div><span class="pts ${d>=0?'up':'down'}">${d>=0?'+':''}${d}</span></div>`}).join('')}</div></div>
