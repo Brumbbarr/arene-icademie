@@ -92,6 +92,22 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .mini.lock{align-items:center;justify-content:center;color:var(--mut)}
 .lob,.lob-a,.lob-b,.lob-c{display:flex;flex-direction:column;gap:14px;min-width:0}
 .keys,.opt kbd{display:none}
+/* ---- Fond travaillé : base de l'arène + grille hexagonale + lueurs + rayons + vignette */
+.bgfx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.bg-grid{position:absolute;inset:-100px;opacity:.6;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z M28 64 L28 97 M0 81 L28 97 L56 81' fill='none' stroke='%23ffffff' stroke-opacity='.06' stroke-width='1'/%3E%3C/svg%3E");background-size:56px 97px;-webkit-mask-image:radial-gradient(120% 80% at 50% 0%,#000 30%,transparent 85%);mask-image:radial-gradient(120% 80% at 50% 0%,#000 30%,transparent 85%)}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.38}
+.bg-orb.o1{width:60vmax;height:60vmax;left:-20vmax;top:-25vmax;background:var(--arena,#3d7bff)}
+.bg-orb.o2{width:50vmax;height:50vmax;right:-22vmax;bottom:-20vmax;background:#7a5cff;opacity:.22}
+.bg-beams{position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 120px,#ffffff06 120px 180px,transparent 180px 320px);-webkit-mask-image:linear-gradient(#000,transparent 70%);mask-image:linear-gradient(#000,transparent 70%)}
+.bg-vig{position:absolute;inset:0;background:radial-gradient(130% 100% at 50% 30%,transparent 50%,#000a 100%)}
+@media (prefers-reduced-motion:no-preference){
+ .bg-orb.o1{animation:drift1 22s ease-in-out infinite alternate}
+ .bg-orb.o2{animation:drift2 28s ease-in-out infinite alternate}
+ .bg-grid{animation:gridpan 60s linear infinite}
+ @keyframes drift1{to{transform:translate(18vmax,10vmax) scale(1.1)}}
+ @keyframes drift2{to{transform:translate(-14vmax,-12vmax) scale(.9)}}
+ @keyframes gridpan{to{transform:translate(56px,97px)}}
+}
 /* ---- Habillage : héros d'arène, accueil vivant, barre d'onglets, boss, coffre */
 .app.m-lobby,.app.m-jouer,.app.m-profil{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .hero{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--arena,var(--line));min-height:210px;display:flex;flex-direction:column;justify-content:space-between;background:#0008;box-shadow:0 10px 40px #0007}
@@ -119,7 +135,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .quest b{display:block;margin:4px 0 8px}
 .row2{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .row2 small{color:var(--mut);font-size:.78rem}
-.go.mini{padding:8px 14px;font-size:.85rem;flex:none;width:auto;align-self:center}
+.go.mini{padding:8px 14px;font-size:.85rem;flex:none;width:auto;height:auto;line-height:1.2;align-self:center;display:inline-block}
 .tag{font-size:.75rem;font-weight:800;color:var(--gold)}
 .revenge{border-color:#5a2130}
 .rv{display:flex;gap:10px;align-items:center}.rv svg{width:44px;height:44px}.rv small{display:block;color:var(--mut);font-size:.75rem}
@@ -216,6 +232,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 </style>
 
 </head><body>
+<div class="bgfx" aria-hidden="true"><div class="bg-grid"></div><div class="bg-orb o1"></div><div class="bg-orb o2"></div><div class="bg-beams"></div><div class="bg-vig"></div></div>
 <div class="app" id="app"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -226,17 +243,13 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 <script src="js/banque-laniflex.js"></script>
 <script src="js/banque-cours.js"></script>
 <script src="js/recompenses.js"></script>
+<script src="js/emblem.js"></script>
 <script src="js/ui.js"></script>
 <script>
 const TIERS=[{nom:'Fer',min:0,c1:'#9aa0ab',c2:'#4b4f57'},{nom:'Bronze',min:950,c1:'#f0a66a',c2:'#7a4420'},{nom:'Argent',min:1050,c1:'#e6edf6',c2:'#7d8a9c'},{nom:'Or',min:1150,c1:'#ffe27a',c2:'#b8841a'},{nom:'Platine',min:1250,c1:'#8ff0e0',c2:'#1f8f84'},{nom:'Diamant',min:1350,c1:'#a9c4ff',c2:'#3557d6'},{nom:'Maître',min:1450,c1:'#e3a6ff',c2:'#7a2fc0'},{nom:'Légende',min:1550,c1:'#ffb3c1',c2:'#d1203f'}];
 function rang(r){let i=TIERS.length-1;while(i>0&&r<TIERS[i].min)i--;if(i===TIERS.length-1)return{i,label:TIERS[i].nom,div:0};const bas=i===0?850:TIERS[i].min,w=(TIERS[i+1].min-bas)/3,div=Math.max(1,Math.min(3,Math.floor((r-bas)/w)+1));return{i,label:TIERS[i].nom+' '+['I','II','III'][div-1],div}}
 let uid=0;
-function emb(points,classee){const k=rang(points),t=classee?TIERS[k.i]:{c1:'#c9ccd3',c2:'#5b5f68'},id='g'+(++uid),tier=classee?k.i:-1;
- const pips=classee&&k.div?[0,1,2].map(j=>`<circle cx="${38+j*12}" cy="90" r="3.4" fill="${j<k.div?t.c1:'none'}" stroke="${t.c1}" stroke-width="1.4"/>`).join(''):'';
- const wings=tier>=5?`<path d="M18 46 L2 34 L10 56 L4 66 L22 62 Z M82 46 L98 34 L90 56 L96 66 L78 62 Z" fill="url(#${id})" opacity=".9"/>`:'';
- const crown=tier>=6?`<path d="M36 14 L42 4 L50 12 L58 4 L64 14 Z" fill="${t.c1}"/>`:'';
- const inner=tier>=3?`<path d="M50 30 L64 44 L50 70 L36 44 Z" fill="${t.c1}" opacity=".9"/><path d="M50 30 L64 44 L50 48 L36 44 Z" fill="#fff" opacity=".4"/>`:tier>=1?`<path d="M50 34 L62 48 L50 64 L38 48 Z" fill="${t.c1}" opacity=".85"/>`:`<text x="50" y="57" text-anchor="middle" font-size="20" font-weight="700" fill="${t.c1}">?</text>`;
- return `<svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${t.c1}"/><stop offset="1" stop-color="${t.c2}"/></linearGradient></defs>${tier>=4?`<circle class="glow" cx="50" cy="48" r="44" fill="${t.c1}" opacity=".5" filter="blur(6px)"/>`:''}${wings}${crown}<path d="M50 10 L84 26 L80 62 L50 82 L20 62 L16 26 Z" fill="url(#${id})" stroke="${t.c2}" stroke-width="2"/><path d="M50 18 L76 30 L73 59 L50 74 L27 59 L24 30 Z" fill="#000" opacity=".25"/>${inner}${pips}</svg>`}
+function emb(points,classee){const k=rang(points);return emblemSvg(classee?k.i:-1,classee?k.div:0)}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const norm=s=>String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/\s+/g,' ').replace(/\s+([?.!,])/g,'$1').trim();
