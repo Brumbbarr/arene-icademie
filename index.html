@@ -268,9 +268,11 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 <script src="js/banque.js"></script>
 <script src="js/banque-fr.js"></script>
 <script src="js/banque-laniflex.js"></script>
+<script src="js/banque-plus.js"></script>
 <script src="js/banque-cours.js"></script>
 <script src="js/traductions.js"></script>
 <script src="js/lecons.js"></script>
+<script src="js/generateurs.js"></script>
 <script src="js/recompenses.js"></script>
 <script src="js/emblem.js"></script>
 <script src="js/ui.js"></script>
@@ -317,19 +319,25 @@ const BOSSES=[
  {id:'final',nom:'Boss final : le Chronophage',sub:'Tous les temps, niveau max',notions:null,n:20,lives:3,time:30,dmin:3}
 ];
 
-function pick(pool,n,weights){const p=pool.slice(),out=[];while(out.length<n&&p.length){let tot=p.reduce((a,q)=>a+(weights?weights(q):1),0),r=Math.random()*tot,i=0;for(;i<p.length;i++){r-=weights?weights(p[i]):1;if(r<=0)break}out.push(p.splice(Math.min(i,p.length-1),1)[0])}return out}
+
+// ---- anti-répétition : on privilégie les questions jamais vues, puis celles vues il y a longtemps
+const qkey=q=>q.k||(q.n+'|'+q.q);
+function vues(){const m={};const now=Date.now();allAnswers().forEach(a=>{if(!a.question||/^Q\d+$|^S\d+$|^Bonus/.test(a.question))return;const t=new Date(a.date+'T12:00').getTime();const v=m[a.question];if(!v||t>v)m[a.question]=t});return m}
+function fresh(seen){const now=Date.now();return q=>{const t=seen[qkey(q)];if(!t)return 1;const j=(now-t)/864e5;return j<2?0.03:j<7?0.2:0.5}}
+function avecGen(pool,nb){const ns=[...new Set(pool.map(q=>q.n))].filter(n=>window.GEN&&GEN[n]);const extra=[];ns.forEach(n=>{for(let i=0;i<nb;i++){try{extra.push(GEN[n]())}catch(_){}}});const keys=new Set(pool.map(qkey));return pool.concat(extra.filter(q=>!keys.has(qkey(q))&&keys.add(qkey(q))))}
+function pick(pool,n,weights0){const fr=fresh(vues());const weights=q=>(weights0?weights0(q):1)*fr(q);const p=pool.slice(),out=[];while(out.length<n&&p.length){let tot=p.reduce((a,q)=>a+(weights?weights(q):1),0),r=Math.random()*tot,i=0;for(;i<p.length;i++){r-=weights?weights(p[i]):1;if(r<=0)break}out.push(p.splice(Math.min(i,p.length-1),1)[0])}return out}
 function startMode(m){const st=elo(allAnswers());let pool=BANQUE.filter(q=>inMod(q)&&(!m.dmax||q.d<=m.dmax));
  const ar=arene(globalMmr(st));const dw=q=>ar.diff[q.d-1]+.3;
  const w=m.weak?q=>{const R=(st[q.n]||{R:100}).R;return Math.max(.2,Math.pow(1.008,325-R))*dw(q)}:dw;
- begin({kind:'mode',titre:m.nom,qs:pick(pool,m.n,w)})}
+ begin({kind:'mode',titre:m.nom,qs:pick(avecGen(pool,6),m.n,w)})}
 function startBoss(b){S.pendingBoss=b;S.screen='bossintro';render()}
 async function claimQuest(){const q=questDuJour();if(q.claimed||q.done<q.goal)return;const carte=tirerCarte(1,true,true,Date.now());
  const doc={date:today(),at:new Date().toISOString(),mode:'quete',titre:'Quête : '+q.id,boss:null,victoire:null,combo:0,carte,reponses:[]};
  S.m={kind:'quete',titre:'Quête du jour'};S.answers=[];S.carte=carte;S.carteNeuve=!collection().has(carte);S.chestOpen=false;S.succesNew=[];S.before=elo(allAnswers());S.showArena=false;S.saving='Sauvegarde…';S.screen='results';render();
  try{await Data.saveSession(doc);await reload();S.saving='Coffre ajouté à ta collection ✓'}catch(e){Data.queue.add(doc);sessions.push(doc);S.saving='Pas de réseau : coffre gardé sur ce téléphone.'}render()}
 function launchBoss(b){const bm=q=>MODS[b.mod||'en'].test(q.n);let pool=BANQUE.filter(q=>bm(q)&&(!b.notions||b.notions.includes(q.n))&&q.d>=(b.dmin||2));if(pool.length<b.n)pool=BANQUE.filter(q=>bm(q)&&(!b.notions||b.notions.includes(q.n)));
- begin({kind:'boss',boss:b,titre:'Boss : '+b.nom,qs:pick(pool,Math.min(b.n,pool.length)),lives:b.lives})}
-function startNotion(id){MOD=modOf(id);begin({kind:'mode',titre:'Entraînement : '+NOTIONS_NOMS[id],qs:pick(BANQUE.filter(q=>q.n===id),10)})}
+ begin({kind:'boss',boss:b,titre:'Boss : '+b.nom,qs:pick(avecGen(pool,4),Math.min(b.n,pool.length+8)),lives:b.lives})}
+function startNotion(id){MOD=modOf(id);begin({kind:'mode',titre:'Entraînement : '+NOTIONS_NOMS[id],qs:pick(avecGen(BANQUE.filter(q=>q.n===id),15),10)})}
 function begin(m){Object.assign(S,{screen:'match',m,idx:0,answers:[],combo:0,best:0,lives:m.lives||0,answered:false,before:elo(allAnswers())});render()}
 
 // ---- answering
@@ -338,7 +346,7 @@ function answer(given){if(S.answered)return;const q=S.m.qs[S.idx];let ok;
  if(q.t==='mc')ok=given===q.a;else ok=q.a.some(a=>strip(a)===strip(given));
  S.answered=true;S.last={ok,given};clearInterval(timerId);
  const cur=elo(allAnswers().concat(S.answers));const s=cur[q.n]||{R:100,g:{}};const E=1/(1+Math.pow(10,(100-s.R)/600));let g=30*((ok?1:0)-E);const d=(s.g||{})[today()]||0;if(g>0&&d>=60)g/=4;g=Math.max(-s.R,g);S.last.delta=Math.round(g);
- S.answers.push({date:today(),seance:S.m.titre,question:'Q'+(S.idx+1),notion:q.n,correct:ok,given:q.t==='mc'?q.o[given]||'(temps écoulé)':given,attendu:q.t==='mc'?q.o[q.a]:q.a[0]});
+ S.answers.push({date:today(),seance:S.m.titre,question:qkey(q).slice(0,240),notion:q.n,correct:ok,given:q.t==='mc'?q.o[given]||'(temps écoulé)':given,attendu:q.t==='mc'?q.o[q.a]:q.a[0]});
  if(ok){S.combo++;S.best=Math.max(S.best,S.combo)}else{S.combo=0;if(S.m.kind==='boss')S.lives--}
  render();floatText((S.last.delta>=0?'+':'')+S.last.delta+' pts',ok);if(ok){S.combo>=3&&S.combo%3===0?SFX.combo():SFX.good()}else SFX.bad()}
 function next(){S.idx++;S.answered=false;const boss=S.m.kind==='boss';if(S.idx>=S.m.qs.length||(boss&&S.lives<=0))return finish();render()}
