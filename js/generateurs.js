@@ -81,8 +81,13 @@
   // ---------- Présent simple ou continu
   const ACTS = [['work', 'working', 'travaille', 'on the project', 'sur le projet'], ['call', 'calling', 'appelle', 'the client', 'le client'], ['prepare', 'preparing', 'prépare', 'a quote', 'un devis'], ['visit', 'visiting', 'visite', 'the warehouse', "l'entrepôt"], ['check', 'checking', 'vérifie', 'the stock', 'le stock'], ['write', 'writing', 'rédige', 'the sales report', 'le rapport des ventes'], ['meet', 'meeting', 'rencontre', 'the suppliers', 'les fournisseurs']];
   const gPSC = () => { const [b, ing, fr, o, fo] = R(ACTS), k = Math.random();
-    if (k < 0.5) return fill('present-simple-continu', 2, `Conjugue : "Right now, I ___ (${b}) ${o}."`, ['am ' + ing, "'m " + ing, 'm ' + ing], 'Right now = en ce moment → présent continu (am + -ing).', `En ce moment, je ${fr} ${fo}.`);
-    return fill('present-simple-continu', 2, `Conjugue : "I usually ___ (${b}) ${o} on Mondays."`, [b], 'Usually = habitude → présent simple.', `D'habitude, je ${fr} ${fo} le lundi.`); };
+    const NOW = [['Right now', 'En ce moment'], ['At the moment', 'En ce moment'], ['Look!', 'Regarde !'], ['This week', 'Cette semaine'], ['Today', "Aujourd'hui"]];
+    const HAB = [['usually', "D'habitude"], ['always', 'Toujours,'], ['often', 'Souvent,'], ['every Monday', 'Chaque lundi,'], ['never', '']];
+    if (k < 0.5) { const [w, fw] = R(NOW); return fill('present-simple-continu', 2, `Conjugue : "${w} I ___ (${b}) ${o}."`, ['am ' + ing, "'m " + ing, 'm ' + ing], `${w} = maintenant ou temporaire → présent continu (am + -ing).`, `${fw}, je ${fr} ${fo}.`.replace('!,', ' !')); }
+    const [w, fw] = R(HAB);
+    if (w === 'never') return fill('present-simple-continu', 2, `Conjugue : "I never ___ (${b}) ${o} on Sundays."`, [b], 'Never = habitude → présent simple.', `Je ne ${fr} jamais ${fo} le dimanche.`.replace(/ne ([aeéiouy])/, "n'$1"));
+    const pos = w === 'every Monday' ? `I ___ (${b}) ${o} ${w}.` : `I ${w} ___ (${b}) ${o}.`;
+    return fill('present-simple-continu', 2, `Conjugue : "${pos}"`, [b], `${w} = habitude → présent simple.`, `${fw} je ${fr} ${fo}.`.replace("D'habitude je", "D'habitude, je")); };
 
   // ---------- Futur
   const gFut = () => { const k = R(['spont', 'plan', 'rdv', 'sign']);
