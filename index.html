@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="fr"><head>
 <title>Arène Icademie</title>
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0a0f1c"><link rel="icon" href="icon-192.png" sizes="192x192"><link rel="apple-touch-icon" href="app-icon-v5-192.png">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a1f3d"><link rel="icon" href="icon-192.png" sizes="192x192"><link rel="apple-touch-icon" href="app-icon-v5-192.png">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>
 /* Layout: one-column phone app, screens swapped in place: lobby, match, results */
-:root{--bg:#0a0f1c;--panel:#121a2c;--panel2:#18223a;--line:#223050;--fg:#e9eef8;--mut:#8c98b3;--acc:#3d7bff;--acc2:#7a5cff;--win:#34d27b;--loss:#ff5a6e;--gold:#ffcf5a;color-scheme:dark;
+:root{--bg:#1a1f3d;--panel:#262d58;--panel2:#2f3768;--line:#434d8c;--fg:#f4f6ff;--mut:#aab4dc;--acc:#4f8cff;--acc2:#a26bff;--win:#34d27b;--loss:#ff5a6e;--gold:#ffcf5a;color-scheme:dark;
 --font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 html,body{background:var(--bg);color:var(--fg)}
 body{font:16px/1.45 var(--font);min-height:100vh}
@@ -67,6 +67,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .fb.good{background:#34d27b1c;border:1px solid #34d27b66}
 .fb.bad{background:#ff5a6e1c;border:1px solid #ff5a6e66}
 .fb b{display:block;margin-bottom:2px}
+.tr{display:block;margin-top:8px;padding-top:8px;border-top:1px dashed #ffffff33;color:#dfe6ff;font-style:italic}
 .pts{font-weight:800;font-variant-numeric:tabular-nums}
 .up{color:var(--win)}.down{color:var(--loss)}
 /* results */
@@ -95,11 +96,11 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 /* ---- Fond travaillé : base de l'arène + grille hexagonale + lueurs + rayons + vignette */
 .bgfx{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .bg-grid{position:absolute;inset:-100px;opacity:.6;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cpath d='M28 0 L56 16 L56 48 L28 64 L0 48 L0 16 Z M28 64 L28 97 M0 81 L28 97 L56 81' fill='none' stroke='%23ffffff' stroke-opacity='.06' stroke-width='1'/%3E%3C/svg%3E");background-size:56px 97px;-webkit-mask-image:radial-gradient(120% 80% at 50% 0%,#000 30%,transparent 85%);mask-image:radial-gradient(120% 80% at 50% 0%,#000 30%,transparent 85%)}
-.bg-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.38}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5}
 .bg-orb.o1{width:60vmax;height:60vmax;left:-20vmax;top:-25vmax;background:var(--arena,#3d7bff)}
-.bg-orb.o2{width:50vmax;height:50vmax;right:-22vmax;bottom:-20vmax;background:#7a5cff;opacity:.22}
+.bg-orb.o2{width:50vmax;height:50vmax;right:-22vmax;bottom:-20vmax;background:#ff6fb5;opacity:.25}
 .bg-beams{position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 120px,#ffffff06 120px 180px,transparent 180px 320px);-webkit-mask-image:linear-gradient(#000,transparent 70%);mask-image:linear-gradient(#000,transparent 70%)}
-.bg-vig{position:absolute;inset:0;background:radial-gradient(130% 100% at 50% 30%,transparent 50%,#000a 100%)}
+.bg-vig{position:absolute;inset:0;background:radial-gradient(130% 100% at 50% 30%,transparent 60%,#0005 100%)}
 @media (prefers-reduced-motion:no-preference){
  .bg-orb.o1{animation:drift1 22s ease-in-out infinite alternate}
  .bg-orb.o2{animation:drift2 28s ease-in-out infinite alternate}
@@ -109,8 +110,8 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
  @keyframes gridpan{to{transform:translate(56px,97px)}}
 }
 /* ---- Habillage : héros d'arène, accueil vivant, barre d'onglets, boss, coffre */
-.app.m-lobby,.app.m-jouer,.app.m-profil{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
-.hero{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--arena,var(--line));min-height:210px;display:flex;flex-direction:column;justify-content:space-between;background:#0008;box-shadow:0 10px 40px #0007}
+.app.m-lobby,.app.m-jouer,.app.m-salle,.app.m-lecon,.app.m-profil{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.hero{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--arena,var(--line));min-height:210px;display:flex;flex-direction:column;justify-content:space-between;background:#ffffff0d;box-shadow:0 10px 40px #0005}
 .hero-sky{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--arena) 35%,transparent),transparent 70%)}
 .hero .scene{position:absolute;left:0;right:0;bottom:0;width:100%;height:62%;opacity:.95}
 .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:24%;background:#0006;z-index:0}
@@ -140,7 +141,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .revenge{border-color:#5a2130}
 .rv{display:flex;gap:10px;align-items:center}.rv svg{width:44px;height:44px}.rv small{display:block;color:var(--mut);font-size:.75rem}
 .big-play{font-size:1.15rem;padding:16px;box-shadow:0 8px 30px #3d7bff55}
-.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);background:#0b1120f2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px))}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);background:#232a55f2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px))}
 .tabbar button,.tabbar a{background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.7rem;font-weight:700;padding:6px 0;text-decoration:none;border-radius:10px}
 .tabbar span{font-size:1.3rem}
 .tabbar .on{color:#fff;background:#ffffff0d}
@@ -204,7 +205,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
  .hero{min-height:280px}.hero .scene{height:85%}.hero h1{font-size:2.2rem}.hero-emb svg{width:96px;height:96px}
  .home{grid-template-columns:repeat(2,minmax(0,1fr))}
  .big-play{max-width:24rem;align-self:center;width:100%}
- .tabbar{left:50%;right:auto;transform:translateX(-50%);bottom:16px;width:30rem;border:1px solid var(--line);border-radius:16px;padding:6px}
+ .tabbar{left:50%;right:auto;transform:translateX(-50%);bottom:16px;width:36rem;border:1px solid var(--line);border-radius:16px;padding:6px}
  .app.m-jouer{max-width:76rem}
  .m-jouer .lob{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-areas:"b c"}
  .lob-b .modes{grid-template-columns:repeat(auto-fill,minmax(17rem,1fr))}
@@ -229,6 +230,19 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
  .glow{animation:glow 3s ease-in-out infinite alternate}
  @keyframes glow{from{opacity:.3}to{opacity:.75}}
 }
+
+/* Salle d'entraînement */
+.salle-h b{display:block;font-size:1.05rem;margin:4px 0}.salle-h small{color:var(--mut)}
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));gap:10px}
+.lesson{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--fg)}
+.lesson:hover{border-color:var(--acc)}.lesson b{display:block;font-size:.95rem}.lesson small{color:var(--mut);font-size:.75rem}
+.lemb svg{width:44px;height:44px}.chev{font-size:1.4rem;color:var(--mut)}
+.tagn{color:#1a1f3d;background:var(--gold);border-radius:6px;padding:1px 6px;font-weight:800;font-size:.7rem}
+.lec{display:flex;flex-direction:column;gap:10px;line-height:1.55}.lec-h{display:flex;gap:12px;align-items:center}.lec-h .lemb svg{width:60px;height:60px}.lec h2{font-size:1.35rem}
+.lec h3{font-size:.95rem;margin:6px 0 0;color:var(--gold)}.idee{margin:0;padding:12px;border-radius:10px;background:#ffffff10;font-size:1.02rem}
+.regles,.pieges{margin:0;padding-left:1.2em;display:grid;gap:4px}.pieges li::marker{color:var(--loss)}
+.ex{display:grid;gap:8px}.ex div{padding:10px 12px;border-left:3px solid var(--acc);background:#ffffff0a;border-radius:0 8px 8px 0}.ex b{display:block}.ex small{color:#dfe6ff;font-style:italic}
+.nobutin{text-align:center;border-color:#55608f}
 /* Route des arènes */
 .route .track{display:flex;align-items:flex-start;overflow-x:auto;padding:10px 2px 6px;scroll-snap-type:x proximity}
 .node{flex:none;width:96px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;scroll-snap-align:center}
@@ -255,6 +269,8 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 <script src="js/banque-fr.js"></script>
 <script src="js/banque-laniflex.js"></script>
 <script src="js/banque-cours.js"></script>
+<script src="js/traductions.js"></script>
+<script src="js/lecons.js"></script>
 <script src="js/recompenses.js"></script>
 <script src="js/emblem.js"></script>
 <script src="js/ui.js"></script>
@@ -332,7 +348,7 @@ async function finish(){clearInterval(timerId);const boss=S.m.kind==='boss';cons
  S.showArena=arene(globalMmr(elo(allAnswers().concat(S.answers)))).n>arene(globalMmr(S.before)).n;render();
  S.succesAvant=succesOk();
  const score=S.answers.filter(a=>a.correct).length/S.answers.length;
- const carte=S.answers.length>=5?tirerCarte(score,boss,won,Date.now()):null;S.carte=carte;S.carteNeuve=carte&&!collection().has(carte);
+ const merite=S.answers.length>=5&&(boss?won:score>=0.6);S.sansButin=!merite&&S.answers.length>=5;const carte=merite?tirerCarte(score,boss,won,Date.now()):null;S.carte=carte;S.carteNeuve=carte&&!collection().has(carte);
  const doc={date:today(),at:new Date().toISOString(),mode:S.m.kind,titre:S.m.titre,boss:boss?S.m.boss.id:null,victoire:boss?won:null,combo:S.best,carte,reponses:S.answers,synchro:false};
  sessions.push(doc);S.succesNew=succesOk().filter(id=>!S.succesAvant.includes(id));sessions.pop();
  S.saving='Sauvegarde…';render();
@@ -413,7 +429,22 @@ function bossIntro(){const b=S.pendingBoss,L=BOSS_LOOK[b.id]||{emoji:'☠',col:'
  <div class="rules"><span>${b.n} questions</span><span>${'♥'.repeat(b.lives)} vies</span><span>⏱ ${b.time} s</span></div>
  <button class="go" data-act="fight">⚔️ Combattre</button><button class="quit" data-act="jouer">Fuir</button></div>`}
 
-function tabbar(){const t=[['lobby','🏠','Accueil'],['jouer','⚔️','Jouer'],['profil','🏆','Profil']];
+
+// ---- Salle d'entraînement : leçons
+let LUS=[];try{LUS=JSON.parse(localStorage.getItem('arene-lus')||'[]')}catch(_){}
+function salle(){const st=elo(allAnswers());const ids=Object.keys(NOTIONS_NOMS).filter(id=>MODS[MOD].test(id)&&LECONS[id]);
+ return `<div class="jh"><span class="label">Matière</span><select class="modsel" id="modsel" aria-label="Matière">${Object.entries(MODS).map(([k2,m])=>`<option value="${k2}" ${k2===MOD?'selected':''}>${m.nom}</option>`).join('')}</select></div>
+ <div class="card salle-h"><span class="label">📚 Salle d'entraînement</span><b>Revois tes cours ou découvre une nouvelle notion</b><small>Chaque leçon tient sur un écran : l'idée, les règles, des exemples traduits et les pièges. Puis entraîne-toi sur 10 questions.</small></div>
+ <div class="lessons">${ids.map(id=>{const s=st[id];const nouveau=!s||!s.n;const lu=LUS.includes(id);return `<button class="lesson" data-lecon="${id}"><span class="lemb">${emb(s?s.R:100,!!(s&&s.n>=3))}</span><span><b>${esc(NOTIONS_NOMS[id])}</b><small>${nouveau?'<span class="tagn">Nouveau</span>':(s.n>=3?rang(s.R).label:'Placement '+s.n+'/3')+' · '+Math.round(s.R)+' pts'}${lu?' · ✓ lue':''}</small></span><span class="chev">›</span></button>`}).join('')}</div>`}
+function lecon(){const id=S.lecon,L=LECONS[id];if(!L)return salle();const st=elo(allAnswers())[id];
+ return `<div class="hud"><button class="quit" data-act="salle">← Salle</button><span class="label" style="flex:1;text-align:center">${esc(MODS[modOf(id)].nom)}</span></div>
+ <article class="card lec"><div class="lec-h"><span class="lemb">${emb(st?st.R:100,!!(st&&st.n>=3))}</span><div><span class="label">Leçon</span><h2>${esc(NOTIONS_NOMS[id])}</h2></div></div>
+ <p class="idee">💡 ${esc(L.i)}</p>
+ ${L.r&&L.r.length?`<h3>📌 À retenir</h3><ul class="regles">${L.r.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+ ${L.e&&L.e.length?`<h3>🗣️ Exemples</h3><div class="ex">${L.e.map(([a,b])=>`<div><b>${esc(a)}</b><small>🇫🇷 ${esc(b)}</small></div>`).join('')}</div>`:''}
+ ${L.p&&L.p.length?`<h3>⚠️ Pièges</h3><ul class="pieges">${L.p.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}</article>
+ <button class="go" data-notion="${id}">🎯 S'entraîner sur cette notion (10 questions)</button>`}
+function tabbar(){const t=[['lobby','🏠','Accueil'],['jouer','⚔️','Jouer'],['salle','📚','Salle'],['profil','🏆','Profil']];
  return `<nav class="tabbar" aria-label="Navigation">${t.map(([s,i,l])=>`<button data-act="${s}" class="${S.screen===s?'on':''}"><span>${i}</span>${l}</button>`).join('')}<a href="progression.html"><span>📈</span>Progression</a></nav>`}
 
 function loginScreen(){return `<header class="top"><div class="who"><h1>Arène Icademie</h1><small>Connecte-toi pour retrouver tes rangs</small></div></header>
@@ -442,7 +473,7 @@ function match(){const m=S.m,q=m.qs[S.idx],boss=m.kind==='boss';
  let body=`<div class="meta"><span>Question ${S.idx+1}/${m.qs.length}</span><span>${esc(NOTIONS_NOMS[q.n])} · ${'★'.repeat(q.d)}</span></div><div class="q pop">${esc(q.q)}</div>`;
  if(q.t==='mc')body+=`<div class="opts">${q.o.map((o,i)=>{let c='';if(S.answered){if(i===q.a)c=' good';else if(i===S.last.given)c=' bad'}return `<button class="opt${c}" data-opt="${i}" ${S.answered?'disabled':''}><kbd>${i+1}</kbd>${esc(o)}</button>`}).join('')}</div>`;
  else body+=`<form class="fill" id="fillf"><input id="fillin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Écris ta réponse" ${S.answered?'disabled':''} value="${S.answered?esc(S.last.given):''}" aria-label="Ta réponse"><button class="go" ${S.answered?'hidden':''}>Valider</button></form>`;
- if(S.answered){const ok=S.last.ok;body+=`<div class="fb ${ok?'good':'bad'} ${ok?'pop':'shake'}"><b>${ok?'Bien joué !':'Raté'} <span class="pts ${S.last.delta>=0?'up':'down'}">${S.last.delta>=0?'+':''}${S.last.delta} pts</span></b>${!ok?`Réponse : <b style="display:inline">${esc(q.t==='mc'?q.o[q.a]:q.a[0])}</b><br>`:''}${esc(q.x)}</div><button class="go" data-act="next">${S.idx+1>=m.qs.length||(boss&&S.lives<=0)?'Voir le résultat':'Suivant'}</button>`}
+ if(S.answered){const ok=S.last.ok;body+=`<div class="fb ${ok?'good':'bad'} ${ok?'pop':'shake'}"><b>${ok?'Bien joué !':'Raté'} <span class="pts ${S.last.delta>=0?'up':'down'}">${S.last.delta>=0?'+':''}${S.last.delta} pts</span></b>${!ok?`Réponse : <b style="display:inline">${esc(q.t==='mc'?q.o[q.a]:q.a[0])}</b><br>`:''}${esc(q.x)}${q.tr?`<div class="tr">🇫🇷 ${esc(q.tr)}</div>`:''}</div><button class="go" data-act="next">${S.idx+1>=m.qs.length||(boss&&S.lives<=0)?'Voir le résultat':'Suivant'}</button>`}
  body+=`<p class="keys">Clavier : ${q.t==='mc'?'1 à '+q.o.length+' pour répondre · ':''}Entrée pour valider / passer à la suite · Échap pour abandonner</p>`;
  return head+body}
 
@@ -454,16 +485,17 @@ function results(){const m=S.m,boss=m.kind==='boss',ok=S.answers.filter(a=>a.cor
  const title=boss?(S.won?'VICTOIRE':'DÉFAITE'):'Session terminée';const clA=Object.values(after).some(x=>x.n>=3);
  return `<div class="card res-h">${emb(gA,clA)}<span class="label">${esc(m.titre)}</span><span class="big" style="color:${boss?(S.won?'var(--gold)':'var(--loss)'):'var(--fg)'}">${title}</span><span>${ok}/${tot} bonnes · meilleur combo ${S.best}</span><span class="pts ${gA-gB>=0?'up':'down'}">Rang global : ${gA-gB>=0?'+':''}${gA-gB} pts → ${clA?rang(gA).label:'Placement'}</span></div>
  <div class="card"><span class="label">Points par notion</span><div class="list">${touched.map(t=>{const d=Math.round(t.a.R-t.b.R),up=t.a.n>=3&&(t.b.n<3||rang(t.a.R).label!==rang(t.b.R).label)&&t.a.R>t.b.R;return `<div class="li">${emb(t.a.R,t.a.n>=3)}<div>${esc(NOTIONS_NOMS[t.id])}<small>${t.a.n>=3?rang(t.a.R).label:'Placement '+t.a.n+'/3'} · ${Math.round(t.a.R)} pts ${up?'<span class="rankup">▲ RANG SUPÉRIEUR</span>':''}</small></div><span class="pts ${d>=0?'up':'down'}">${d>=0?'+':''}${d}</span></div>`}).join('')}</div></div>
- ${S.answers.some(a=>!a.correct)?`<div class="card"><span class="label">Tes erreurs</span><div class="list">${S.answers.map((a,i)=>a.correct?'':`<div class="li" style="grid-template-columns:1fr"><div>${esc(m.qs[i].q)}<small>Toi : ${esc(a.given||'—')} · Réponse : ${esc(a.attendu)}</small><small>${esc(m.qs[i].x)}</small></div></div>`).join('')}</div></div>`:''}
- ${S.carte?`<div class="card" style="text-align:center"><span class="label">🎁 Butin de la session</span>${S.chestOpen?carteHtml(S.carte,S.carteNeuve):`<button class="chest" data-act="chest" aria-label="Ouvrir le coffre"><span class="chest-ic">🎁</span><b>Touche pour ouvrir le coffre</b></button>`}</div>`:(tot&&tot<5?'<p class="note" style="text-align:center">Réponds à 5 questions ou plus pour gagner une carte.</p>':'')}
+ ${S.answers.some(a=>!a.correct)?`<div class="card"><span class="label">Tes erreurs</span><div class="list">${S.answers.map((a,i)=>a.correct?'':`<div class="li" style="grid-template-columns:1fr"><div>${esc(m.qs[i].q)}<small>Toi : ${esc(a.given||'—')} · Réponse : ${esc(a.attendu)}</small><small>${esc(m.qs[i].x)}</small>${m.qs[i].tr?`<small class="tr">🇫🇷 ${esc(m.qs[i].tr)}</small>`:''}</div></div>`).join('')}</div></div>`:''}
+ ${S.carte?`<div class="card" style="text-align:center"><span class="label">🎁 Butin de la session</span>${S.chestOpen?carteHtml(S.carte,S.carteNeuve):`<button class="chest" data-act="chest" aria-label="Ouvrir le coffre"><span class="chest-ic">🎁</span><b>Touche pour ouvrir le coffre</b></button>`}</div>`:(S.sansButin?`<div class="card nobutin"><span class="label">🔒 Pas de butin cette fois</span><p class="note">${boss?'Bats le boss pour gagner un coffre.':'Il faut au moins 60 % de bonnes réponses pour gagner un coffre. Tu as fait '+Math.round(100*ok/tot)+' %.'} Refais une session pour retenter ta chance !</p></div>`:(tot&&tot<5?'<p class="note" style="text-align:center">Réponds à 5 questions ou plus pour gagner une carte.</p>':''))}
  ${(S.succesNew||[]).map(id=>{const x=SUCCES.find(s=>s.id===id);return `<div class="card pop" style="border-color:var(--gold)"><span class="label" style="color:var(--gold)">🏆 Succès débloqué</span><b style="display:block">${esc(x.nom)}</b><span class="note">${esc(x.desc)} · nouveau titre : « ${esc(x.titre)} »</span></div>`}).join('')}
  ${(()=>{const a1=arene(gB),a2=arene(gA);return a2.n>a1.n?`<div class="card pop" style="border-color:${a2.acc};text-align:center"><span class="label" style="color:${a2.acc}">Nouvelle arène débloquée</span><div style="font-size:2.2rem">${a2.deco}</div><b>${esc(a2.nom)}</b><p class="note">Les questions deviennent plus difficiles.</p></div>`:''})()}
  <p class="save">${esc(S.saving||'')}</p><button class="go" data-act="lobby">Retour à l'accueil</button>${ov}`}
 
 function render(){const app=document.getElementById('app');clearInterval(timerId);
  const ar=arene(globalMmr(elo(allAnswers())));document.body.style.background=ar.bg;document.body.style.backgroundAttachment='fixed';document.documentElement.style.setProperty('--arena',ar.acc);
- const V={login:loginScreen,lobby,jouer,profil,bossintro:bossIntro,match,results};
- app.className='app m-'+S.screen;app.innerHTML=(V[S.screen]||lobby)()+(['lobby','jouer','profil'].includes(S.screen)?tabbar():'');
+ const V={login:loginScreen,lobby,jouer,salle,lecon,profil,bossintro:bossIntro,match,results};
+ app.className='app m-'+S.screen;app.innerHTML=(V[S.screen]||lobby)()+(['lobby','jouer','salle','lecon','profil'].includes(S.screen)?tabbar():'');
+ if(S.screen==='lecon'&&!LUS.includes(S.lecon)){LUS.push(S.lecon);try{localStorage.setItem('arene-lus',JSON.stringify(LUS))}catch(_){}}
  const tr=document.getElementById('track');if(tr){const h=tr.querySelector('.here');if(h)tr.scrollLeft=h.offsetLeft-tr.clientWidth/2+46}
  const ms=document.getElementById('modsel');if(ms)ms.onchange=()=>{MOD=ms.value;try{localStorage.setItem('arene-mod',MOD)}catch(_){}render()};
  if(S.screen==='login'){document.getElementById('loginf').onsubmit=async e=>{e.preventDefault();const m=document.getElementById('loginmsg');try{await Data.login(document.getElementById('email').value.trim());m.textContent='Lien envoyé ✓ Ouvre ta boîte mail sur cet appareil.'}catch(err){m.textContent='Envoi impossible : '+(err.message||'réessaie dans une minute.')}}}
@@ -480,6 +512,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
  else if(b.dataset.act==='lobby'){S.screen='lobby';render()}
  else if(b.dataset.act==='profil'){S.screen='profil';render()}
  else if(b.dataset.act==='jouer'){S.screen='jouer';render()}
+ else if(b.dataset.act==='salle'){S.screen='salle';render()}
+ else if(b.dataset.lecon){S.lecon=b.dataset.lecon;S.screen='lecon';render()}
  else if(b.dataset.act==='son'){SFX.toggle();render()}
  else if(b.dataset.act==='fight'){const bb=S.pendingBoss;S.pendingBoss=null;launchBoss(bb)}
  else if(b.dataset.act==='claim')claimQuest()
